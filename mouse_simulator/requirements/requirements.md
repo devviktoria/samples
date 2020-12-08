@@ -10,8 +10,8 @@ This application is a cat toy app. The goal of the app is to simulate the above 
 
 
 ## Users
-the player - who is intended to be a cat 
-the human user - who can control the app's behavior or change the app's settings
+* the player - who is intended to be a cat 
+* the human user - who can control the app's behavior or change the app's settings
 
 ## Requirements
 
