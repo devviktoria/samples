@@ -11,7 +11,7 @@ class PositionCalculator {
       : assert(_x >= 0),
         assert(_y >= 0);
 
-  Point newPosition() {
+  Point<double> newPosition() {
     double randomDistance = 200 + Random().nextDouble() * 50;
     double randomAngleRadians = _getAngleRadians();
     double potentialNewX = _x + randomDistance * cos(randomAngleRadians);
