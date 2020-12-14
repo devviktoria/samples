@@ -1,6 +1,8 @@
 import 'dart:math';
 import 'dart:ui';
 
+import 'point_angle_data.dart';
+
 class PositionCalculator {
   Size _rectangleSize;
   double _x;
@@ -11,7 +13,7 @@ class PositionCalculator {
       : assert(_x >= 0),
         assert(_y >= 0);
 
-  Point<double> newPosition() {
+  PointAngleData newPosition() {
     double randomDistance = 200 + Random().nextDouble() * 50;
     double randomAngleRadians = _getAngleRadians();
     double potentialNewX = _x + randomDistance * cos(randomAngleRadians);
@@ -36,7 +38,10 @@ class PositionCalculator {
       potentialNewY = maxY;
     }
 
-    return Point(potentialNewX, potentialNewY);
+    return PointAngleData(
+      point: Point(potentialNewX, potentialNewY),
+      mathAngle: randomAngleRadians,
+    );
   }
 
   double _getAngleRadians() {

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:math';
 
 import 'position_calculator.dart';
+import 'point_angle_data.dart';
 
 class AnimatedShape extends StatefulWidget {
   @override
@@ -13,7 +14,7 @@ class _AnimatedShapeState extends State<AnimatedShape>
   final Size _objectSize = Size(178.0, 64.0);
 
   late AnimationController _animationController = AnimationController(
-    duration: Duration(seconds: 1),
+    duration: Duration(seconds: 2),
     vsync: this,
   );
 
@@ -22,6 +23,9 @@ class _AnimatedShapeState extends State<AnimatedShape>
   double _endPositionX = 50.0;
   double _endPositionY = 50.0;
   //bool _animationShouldBeStopped = false;
+
+  double _mouseAngle = 0.0;
+
   late Size _containerSize;
 
   late PositionCalculator _positionCalculator;
@@ -69,8 +73,11 @@ class _AnimatedShapeState extends State<AnimatedShape>
               parent: _animationController,
               curve: Curves.linear,
             )),
-            child: Image(
-              image: AssetImage('assets/images/mouse.png'),
+            child: Transform.rotate(
+              angle: _mouseAngle,
+              child: Image(
+                image: AssetImage('assets/images/mouse.png'),
+              ),
             ),
           ),
         ],
@@ -86,12 +93,13 @@ class _AnimatedShapeState extends State<AnimatedShape>
 
   void _animationStatusChanged(AnimationStatus newStatus) {
     if (newStatus == AnimationStatus.completed) {
-      Point<double> newPosition = _positionCalculator.newPosition();
+      PointAngleData newPointAngleData = _positionCalculator.newPosition();
       setState(() {
+        _mouseAngle = newPointAngleData.clockwiseAngle;
         _initialPositionX = _endPositionX;
         _initialPositionY = _endPositionY;
-        _endPositionX = newPosition.x;
-        _endPositionY = newPosition.y;
+        _endPositionX = newPointAngleData.point.x;
+        _endPositionY = newPointAngleData.point.y;
 
         _animationController.reset();
         _animationController.forward();
