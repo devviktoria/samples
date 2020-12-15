@@ -11,23 +11,22 @@ class AnimatedShape extends StatefulWidget {
 
 class _AnimatedShapeState extends State<AnimatedShape>
     with TickerProviderStateMixin {
-  final Size _objectSize = Size(178.0, 64.0);
+  static const Size _objectSize = Size(178.0, 64.0);
+
+  double _initialPositionX = _objectSize.width + 10;
+  double _initialPositionY = _objectSize.height + 10;
+  double _endPositionX = _objectSize.width + 50.0;
+  double _endPositionY = _objectSize.height + 50.0;
+  //bool _animationShouldBeStopped = false;
+
+  double _clockwiseMouseAngle = pi / 4;
 
   late AnimationController _animationController = AnimationController(
     duration: Duration(seconds: 2),
     vsync: this,
   );
 
-  double _initialPositionX = 0.0;
-  double _initialPositionY = 0.0;
-  double _endPositionX = 50.0;
-  double _endPositionY = 50.0;
-  //bool _animationShouldBeStopped = false;
-
-  double _mouseAngle = 0.0;
-
   late Size _containerSize;
-
   late PositionCalculator _positionCalculator;
 
   @override
@@ -45,7 +44,12 @@ class _AnimatedShapeState extends State<AnimatedShape>
     return LayoutBuilder(builder: (context, constraints) {
       _containerSize = constraints.biggest;
       _positionCalculator = PositionCalculator(
-          _containerSize, _endPositionX, _endPositionY, _objectSize);
+        _endPositionX,
+        _endPositionY,
+        -_clockwiseMouseAngle,
+        _objectSize,
+        _containerSize,
+      );
 
       return Stack(
         children: [
@@ -74,7 +78,7 @@ class _AnimatedShapeState extends State<AnimatedShape>
               curve: Curves.linear,
             )),
             child: Transform.rotate(
-              angle: _mouseAngle,
+              angle: _clockwiseMouseAngle,
               child: Image(
                 image: AssetImage('assets/images/mouse.png'),
               ),
@@ -95,7 +99,7 @@ class _AnimatedShapeState extends State<AnimatedShape>
     if (newStatus == AnimationStatus.completed) {
       PointAngleData newPointAngleData = _positionCalculator.newPosition();
       setState(() {
-        _mouseAngle = newPointAngleData.clockwiseAngle;
+        _clockwiseMouseAngle = newPointAngleData.clockwiseAngle;
         _initialPositionX = _endPositionX;
         _initialPositionY = _endPositionY;
         _endPositionX = newPointAngleData.point.x;
