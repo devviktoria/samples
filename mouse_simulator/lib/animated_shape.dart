@@ -17,10 +17,11 @@ class _AnimatedShapeState extends State<AnimatedShape>
   double _initialPositionY = _objectSize.height + 10;
   double _endPositionX = _objectSize.width + 50.0;
   double _endPositionY = _objectSize.height + 50.0;
-  //bool _animationShouldBeStopped = false;
 
   double _beginClockwiseMouseAngle = 0;
   double _endClockwiseMouseAngle = pi / 4;
+
+  int _pressedCount = 0;
 
   late AnimationController _animationController = AnimationController(
     duration: Duration(seconds: 1),
@@ -98,8 +99,12 @@ class _AnimatedShapeState extends State<AnimatedShape>
             rect: rectTween,
             child: AnimatedBuilder(
               animation: _animationController,
-              child: Image(
-                image: AssetImage('assets/images/mouse.png'),
+              child: Listener(
+                onPointerDown: _pressedDown,
+                onPointerUp: _pressedUp,
+                child: Image(
+                  image: AssetImage('assets/images/mouse.png'),
+                ),
               ),
               builder: (BuildContext context, Widget? child) {
                 return Transform.rotate(
@@ -134,6 +139,28 @@ class _AnimatedShapeState extends State<AnimatedShape>
         _animationController.reset();
         _animationController.forward();
       });
+    }
+  }
+
+  void _pressedDown(PointerEvent event) {
+    _pressedChanged(1);
+  }
+
+  void _pressedUp(PointerEvent event) {
+    _pressedChanged(-1);
+  }
+
+  void _pressedChanged(int value) {
+    _pressedCount += value;
+
+    if (_pressedCount > 0) {
+      if (_animationController.isAnimating) {
+        _animationController.stop();
+      }
+    } else {
+      if (!_animationController.isAnimating) {
+        _animationController.forward();
+      }
     }
   }
 }
