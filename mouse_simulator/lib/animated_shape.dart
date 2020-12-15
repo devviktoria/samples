@@ -19,10 +19,11 @@ class _AnimatedShapeState extends State<AnimatedShape>
   double _endPositionY = _objectSize.height + 50.0;
   //bool _animationShouldBeStopped = false;
 
-  double _clockwiseMouseAngle = pi / 4;
+  double _beginClockwiseMouseAngle = 0;
+  double _endClockwiseMouseAngle = pi / 4;
 
   late AnimationController _animationController = AnimationController(
-    duration: Duration(seconds: 2),
+    duration: Duration(seconds: 1),
     vsync: this,
   );
 
@@ -46,42 +47,66 @@ class _AnimatedShapeState extends State<AnimatedShape>
       _positionCalculator = PositionCalculator(
         _endPositionX,
         _endPositionY,
-        -_clockwiseMouseAngle,
+        -_beginClockwiseMouseAngle,
         _objectSize,
         _containerSize,
+      );
+
+      Animation<RelativeRect> rectTween = RelativeRectTween(
+        begin: RelativeRect.fromSize(
+          Rect.fromLTWH(
+            _initialPositionX,
+            _initialPositionY,
+            _objectSize.width,
+            _objectSize.height,
+          ),
+          _containerSize,
+        ),
+        end: RelativeRect.fromSize(
+          Rect.fromLTWH(
+            _endPositionX,
+            _endPositionY,
+            _objectSize.width,
+            _objectSize.height,
+          ),
+          _containerSize,
+        ),
+      ).animate(CurvedAnimation(
+          parent: _animationController,
+          curve: Interval(
+            0.1,
+            1.0,
+            curve: Curves.ease,
+          )));
+      Animation<double> rotationAnimation = Tween<double>(
+        begin: _beginClockwiseMouseAngle,
+        end: _endClockwiseMouseAngle,
+      ).animate(
+        CurvedAnimation(
+          parent: _animationController,
+          curve: Interval(
+            0.0,
+            0.5,
+            curve: Curves.ease,
+          ),
+        ),
       );
 
       return Stack(
         children: [
           PositionedTransition(
-            rect: RelativeRectTween(
-              begin: RelativeRect.fromSize(
-                Rect.fromLTWH(
-                  _initialPositionX,
-                  _initialPositionY,
-                  _objectSize.width,
-                  _objectSize.height,
-                ),
-                _containerSize,
-              ),
-              end: RelativeRect.fromSize(
-                Rect.fromLTWH(
-                  _endPositionX,
-                  _endPositionY,
-                  _objectSize.width,
-                  _objectSize.height,
-                ),
-                _containerSize,
-              ),
-            ).animate(CurvedAnimation(
-              parent: _animationController,
-              curve: Curves.linear,
-            )),
-            child: Transform.rotate(
-              angle: _clockwiseMouseAngle,
+            rect: rectTween,
+            child: AnimatedBuilder(
+              animation: _animationController,
               child: Image(
                 image: AssetImage('assets/images/mouse.png'),
               ),
+              builder: (BuildContext context, Widget? child) {
+                return Transform.rotate(
+                  angle: rotationAnimation.value,
+                  child: child,
+                );
+              },
             ),
           ),
         ],
@@ -99,7 +124,8 @@ class _AnimatedShapeState extends State<AnimatedShape>
     if (newStatus == AnimationStatus.completed) {
       PointAngleData newPointAngleData = _positionCalculator.newPosition();
       setState(() {
-        _clockwiseMouseAngle = newPointAngleData.clockwiseAngle;
+        _beginClockwiseMouseAngle = _endClockwiseMouseAngle;
+        _endClockwiseMouseAngle = newPointAngleData.clockwiseAngle;
         _initialPositionX = _endPositionX;
         _initialPositionY = _endPositionY;
         _endPositionX = newPointAngleData.point.x;

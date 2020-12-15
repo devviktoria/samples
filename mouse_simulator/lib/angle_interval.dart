@@ -14,13 +14,13 @@ class AngleInterval {
     double fittedAngle = angle + 2 * pi;
 
     if (fittedAngle >= minValue && fittedAngle <= maxValue) {
-      return fittedAngle;
+      return angle;
     }
 
     fittedAngle = angle - 2 * pi;
 
     if (fittedAngle >= minValue && fittedAngle <= maxValue) {
-      return fittedAngle;
+      return angle;
     }
 
     fittedAngle = (minValue + maxValue) / 2;
