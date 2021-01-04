@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import 'animation_can_run_model.dart';
 import 'main_page.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(ChangeNotifierProvider(
+    create: (context) => AnimationCanRunModel(),
+    child: MyApp(),
+  ));
 }
 
 class MyApp extends StatelessWidget {
