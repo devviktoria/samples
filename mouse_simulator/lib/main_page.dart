@@ -36,9 +36,10 @@ class _StartStopListTitle extends StatelessWidget {
           leading: animationCanRun.animationCanRun
               ? Icon(Icons.stop_circle_outlined)
               : Icon(Icons.play_circle_outline),
-          title: Text(animationCanRun.animationCanRun ? 'Stop' : 'Start'),
+          title: Text(animationCanRun.animationCanRun ? 'Stop' : 'Continue'),
           onTap: () {
             animationCanRun.animationCanRun = !animationCanRun.animationCanRun;
+            Navigator.pop(context);
           });
     });
   }

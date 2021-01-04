@@ -1,6 +1,8 @@
-import 'package:flutter/material.dart';
 import 'dart:math';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import 'animation_can_run_model.dart';
 import 'position_calculator.dart';
 import 'point_angle_data.dart';
 
@@ -43,6 +45,15 @@ class _AnimatedShapeState extends State<AnimatedShape>
 
   @override
   Widget build(BuildContext context) {
+    AnimationCanRunModel animationCanRunModel =
+        context.watch<AnimationCanRunModel>();
+
+    if (animationCanRunModel.animationCanRun) {
+      _continueAnimationController();
+    } else {
+      _stopAnimationController();
+    }
+
     return LayoutBuilder(builder: (context, constraints) {
       _containerSize = constraints.biggest;
       _positionCalculator = PositionCalculator(
@@ -153,14 +164,27 @@ class _AnimatedShapeState extends State<AnimatedShape>
   void _pressedChanged(int value) {
     _pressedCount += value;
 
+    if (!Provider.of<AnimationCanRunModel>(context, listen: false)
+        .animationCanRun) {
+      return;
+    }
+
     if (_pressedCount > 0) {
-      if (_animationController.isAnimating) {
-        _animationController.stop();
-      }
+      _stopAnimationController();
     } else {
-      if (!_animationController.isAnimating) {
-        _animationController.forward();
-      }
+      _continueAnimationController();
+    }
+  }
+
+  void _stopAnimationController() {
+    if (_animationController.isAnimating) {
+      _animationController.stop();
+    }
+  }
+
+  void _continueAnimationController() {
+    if (!_animationController.isAnimating) {
+      _animationController.forward();
     }
   }
 }
