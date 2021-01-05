@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import 'animated_shape.dart';
 import 'animation_can_run_model.dart';
+import 'settings_form.dart';
 
 class MainPage extends StatelessWidget {
   @override
@@ -16,13 +17,28 @@ class MainPage extends StatelessWidget {
         padding: EdgeInsets.zero,
         children: <Widget>[
           _StartStopListTitle(),
-          // ListTile(
-          //   leading: Icon(Icons.settings),
-          //   title: Text('Settings'),
-          // ),
+          ListTile(
+            leading: Icon(Icons.settings),
+            title: Text('Settings'),
+            onTap: () {
+              _openSettingsForm(context);
+            },
+          ),
         ],
       )),
       body: AnimatedShape(),
+    );
+  }
+
+  void _openSettingsForm(BuildContext context) {
+    Navigator.pop(context);
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) {
+          return SettingsForm();
+        },
+      ),
     );
   }
 }
