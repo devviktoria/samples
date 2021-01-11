@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.mouse_simulator">
+    package="com.devviktoria.mouse_simulator">
    <application
         android:label="mouse_simulator"
         android:icon="@mipmap/ic_launcher">
