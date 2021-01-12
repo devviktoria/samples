@@ -3,14 +3,18 @@ import 'package:provider/provider.dart';
 
 import 'animated_shape.dart';
 import 'animation_can_run_model.dart';
+import 'background_image_model.dart';
 import 'settings_form.dart';
 
 class MainPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    BackgroundImageModel backgroundImageModel =
+        context.watch<BackgroundImageModel>();
+
     return Scaffold(
       appBar: AppBar(
-        title: Text('Sample Position Animation'),
+        title: Text('Mouse Simulator'),
       ),
       endDrawer: Drawer(
           child: ListView(
@@ -19,14 +23,22 @@ class MainPage extends StatelessWidget {
           _StartStopListTitle(),
           ListTile(
             leading: Icon(Icons.settings),
-            title: Text('Settings'),
+            title: Text('Background image'),
             onTap: () {
               _openSettingsForm(context);
             },
           ),
         ],
       )),
-      body: AnimatedShape(),
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: backgroundImageModel.backgroundImageProvider,
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: AnimatedShape(),
+      ),
     );
   }
 

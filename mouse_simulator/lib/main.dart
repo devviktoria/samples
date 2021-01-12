@@ -2,13 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'animation_can_run_model.dart';
+import 'background_image_model.dart';
 import 'main_page.dart';
 
 void main() {
-  runApp(ChangeNotifierProvider(
-    create: (context) => AnimationCanRunModel(),
-    child: MyApp(),
-  ));
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (context) => AnimationCanRunModel(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => BackgroundImageModel(),
+        )
+      ],
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -16,7 +26,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Mouse Simulator',
       theme: ThemeData(
         // This is the theme of your application.
         //

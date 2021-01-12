@@ -6,6 +6,7 @@ import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
 
 class MainActivity: FlutterActivity() {
+    // We only need this because the path_provider plugin is not nullsafety yet
     private val CHANNEL = "com.devviktoria.mouse_simulator/datadirecorypath"
 
     override fun configureFlutterEngine(@NonNull flutterEngine: FlutterEngine) {
@@ -24,6 +25,7 @@ class MainActivity: FlutterActivity() {
         }
     }
 
+  // We only need this because the path_provider plugin is not nullsafety yet
   private fun getDataDirectoryPath(): String {
     val dataDirectoryPath: String
     dataDirectoryPath = this.filesDir.getPath()

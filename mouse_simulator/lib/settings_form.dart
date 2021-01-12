@@ -1,10 +1,11 @@
 import 'dart:io';
 
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
-import 'package:path/path.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:provider/provider.dart';
+
+import 'background_image_model.dart';
 
 class SettingsForm extends StatefulWidget {
   @override
@@ -13,29 +14,13 @@ class SettingsForm extends StatefulWidget {
 
 class _SettingsFormState extends State<SettingsForm> {
   //final _formKey = GlobalKey<FormState>();
-
-  String _filePath = '';
-  String _filenameToDisplay = 'The Builtin image';
-  String _appPath = '';
-
-  Image get backgroundImage {
-    if (_filePath.isEmpty) {
-      return Image.asset(
-        'assets/images/defaultbackgroung.png',
-        width: 128,
-        height: 80,
-      );
-    } else {
-      return Image.file(
-        File(_filePath),
-        width: 128,
-        height: 80,
-      );
-    }
-  }
+  String _selectedFilePath = '';
 
   @override
   Widget build(BuildContext context) {
+    BackgroundImageModel backgroundImageModel =
+        context.watch<BackgroundImageModel>();
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Background image'),
@@ -45,17 +30,20 @@ class _SettingsFormState extends State<SettingsForm> {
           ListTile(
             title: const Text("The app's background image is:"),
           ),
-          backgroundImage,
+          buildBackgroundImage(backgroundImageModel),
+          ListTile(
+            title: Text('${backgroundImageModel.fileNameToDisplay}'),
+          ),
           ElevatedButton(
             child: Text('Select background image'),
-            onPressed: () => _openFilePicker(),
+            onPressed: () => _selectNewFile(context),
           ),
           OutlinedButton(
             child: Text('Reset to use the builtin image'),
-            onPressed: _filePath.isEmpty
+            onPressed: backgroundImageModel.defaultImageIsUsed
                 ? null
                 : () {
-                    _resetToDefaultBackgroundImage();
+                    _resetToDefaultBackgroundImage(context);
                   },
           ),
           ElevatedButton(
@@ -63,53 +51,50 @@ class _SettingsFormState extends State<SettingsForm> {
             onPressed: () => Navigator.pop(context),
           ),
           ListTile(
-            title: Text('$_filenameToDisplay'),
+            title: Text('$_selectedFilePath'),
           ),
-          Text('$_appPath'),
         ],
       ),
     );
   }
 
-  void _openFilePicker() async {
+  void _selectNewFile(BuildContext context) async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
       allowedExtensions: ['png', 'jpg', 'jpeg', 'gif', 'webp', 'bmp'],
     );
-    String dataDirectoryPath = await _getDataDirectoryPath();
 
-    if (result != null && dataDirectoryPath.isNotEmpty) {
-      File file = File(result.files.single.path as String);
-
-      String fileExtension = extension(result.files.single.path as String);
-      String filePath = dataDirectoryPath + '/custombgr$fileExtension';
-      file.copy(filePath);
-
+    if (result != null && result.files.single.path != null) {
       setState(() {
-        if (result.files.single.path != null) {
-          _filePath = filePath;
-          _appPath = dataDirectoryPath;
-          _filenameToDisplay = _filePath;
-        }
+        _selectedFilePath = result.files.single.path as String;
       });
+
+      Provider.of<BackgroundImageModel>(context, listen: false)
+          .selectNewFile(result.files.single.path as String);
     }
   }
 
-  Future<String> _getDataDirectoryPath() async {
-    final MethodChannel platform =
-        MethodChannel('com.devviktoria.mouse_simulator/datadirecorypath');
-    String dataDirectoryPath;
-    try {
-      dataDirectoryPath = await platform.invokeMethod('getDataDirectoryPath');
-    } on PlatformException {
-      dataDirectoryPath = "";
-    }
-
-    return dataDirectoryPath;
+  void _resetToDefaultBackgroundImage(BuildContext context) {
+    Provider.of<BackgroundImageModel>(context, listen: false)
+        .resetToDefaultBackgroundImage();
   }
 
-  void _resetToDefaultBackgroundImage() {
-    _filePath = '';
-    _filenameToDisplay = 'The Builtin image';
+  Image buildBackgroundImage(BackgroundImageModel backgroundImageModel) {
+    if (backgroundImageModel.defaultImageIsUsed) {
+      return Image.asset(
+        'assets/images/defaultbackgroung.png',
+        width: 160,
+        height: 256,
+      );
+    } else {
+      ImageCache().clear();
+
+      // print(imageCache.liveImageCount);
+      return Image(
+        image: backgroundImageModel.backgroundImageProvider,
+        width: 160,
+        height: 256,
+      );
+    }
   }
 }
