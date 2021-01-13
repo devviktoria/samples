@@ -5,15 +5,20 @@ import 'animation_can_run_model.dart';
 import 'background_image_model.dart';
 import 'main_page.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  BackgroundImageModel backgroundImageModel = BackgroundImageModel();
+  await backgroundImageModel.initialize();
+
   runApp(
     MultiProvider(
       providers: [
         ChangeNotifierProvider(
           create: (context) => AnimationCanRunModel(),
         ),
-        ChangeNotifierProvider(
-          create: (context) => BackgroundImageModel(),
+        ChangeNotifierProvider.value(
+          value: backgroundImageModel,
         )
       ],
       child: MyApp(),

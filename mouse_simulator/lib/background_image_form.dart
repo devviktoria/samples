@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -7,15 +5,12 @@ import 'package:provider/provider.dart';
 
 import 'background_image_model.dart';
 
-class SettingsForm extends StatefulWidget {
+class BackgroundImageForm extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => _SettingsFormState();
+  State<StatefulWidget> createState() => _BackgroundImageFormState();
 }
 
-class _SettingsFormState extends State<SettingsForm> {
-  //final _formKey = GlobalKey<FormState>();
-  String _selectedFilePath = '';
-
+class _BackgroundImageFormState extends State<BackgroundImageForm> {
   @override
   Widget build(BuildContext context) {
     BackgroundImageModel backgroundImageModel =
@@ -31,27 +26,26 @@ class _SettingsFormState extends State<SettingsForm> {
             title: const Text("The app's background image is:"),
           ),
           buildBackgroundImage(backgroundImageModel),
-          ListTile(
-            title: Text('${backgroundImageModel.fileNameToDisplay}'),
+          Center(
+            child: Text('${backgroundImageModel.fileNameToDisplay}'),
           ),
-          ElevatedButton(
-            child: Text('Select background image'),
-            onPressed: () => _selectNewFile(context),
+          Padding(
+            padding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+            child: ElevatedButton(
+              child: Text('Select background image'),
+              onPressed: () => _selectNewFile(context),
+            ),
           ),
-          OutlinedButton(
-            child: Text('Reset to use the builtin image'),
-            onPressed: backgroundImageModel.defaultImageIsUsed
-                ? null
-                : () {
-                    _resetToDefaultBackgroundImage(context);
-                  },
-          ),
-          ElevatedButton(
-            child: Text('Back to the game'),
-            onPressed: () => Navigator.pop(context),
-          ),
-          ListTile(
-            title: Text('$_selectedFilePath'),
+          Padding(
+            padding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+            child: OutlinedButton(
+              child: Text('Reset to use the builtin image'),
+              onPressed: backgroundImageModel.defaultImageIsUsed
+                  ? null
+                  : () {
+                      _resetToDefaultBackgroundImage(context);
+                    },
+            ),
           ),
         ],
       ),
@@ -65,10 +59,6 @@ class _SettingsFormState extends State<SettingsForm> {
     );
 
     if (result != null && result.files.single.path != null) {
-      setState(() {
-        _selectedFilePath = result.files.single.path as String;
-      });
-
       Provider.of<BackgroundImageModel>(context, listen: false)
           .selectNewFile(result.files.single.path as String);
     }

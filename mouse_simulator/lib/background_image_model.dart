@@ -20,7 +20,7 @@ class BackgroundImageModel extends ChangeNotifier {
   }
 
   String get fileNameToDisplay {
-    return _filePath.isEmpty ? 'The builtin image' : _filePath;
+    return _filePath.isEmpty ? 'The builtin image' : 'Custom image';
   }
 
   String get filePath {
@@ -41,50 +41,42 @@ class BackgroundImageModel extends ChangeNotifier {
     );
   }
 
-  void selectNewFile(String newPath) async {
+  BackgroundImageModel();
+
+  Future<void> initialize() async {
+    _appDataFilePath = await _getDataDirectoryPath();
+    Directory appDataDir = Directory(_appDataFilePath);
+
+    if (await appDataDir.exists()) {
+      List<FileSystemEntity> filesInDirectory = appDataDir.listSync();
+      filesInDirectory.forEach((fileSystemEntity) {
+        if (basename(fileSystemEntity.path).contains('custombgr')) {
+          _filePath = fileSystemEntity.path;
+          _currentFileImageProvider = FileImage(File(_filePath));
+        }
+      });
+    }
+  }
+
+  Future<void> selectNewFile(String newPath) async {
     if (_appDataFilePath.isEmpty) {
       _appDataFilePath = await _getDataDirectoryPath();
     }
 
     if (_appDataFilePath.isNotEmpty) {
-      //await FileImage(File(_filePath)).evict();
-      // ImageCache imageCache = ImageCache();
-
-      // print(imageCache.liveImageCount);
-      bool? result = await _currentFileImageProvider?.evict();
-      print(result?.toString());
+      await _currentFileImageProvider?.evict();
 
       File file = File(newPath);
-
       String fileExtension = extension(newPath);
       String filePath = _appDataFilePath + '/custombgr$fileExtension';
       file.copySync(filePath);
+      await file.delete();
 
       _filePath = filePath;
-
-      await file.delete();
       _currentFileImageProvider = FileImage(File(_filePath));
       notifyListeners();
     }
   }
-
-  // BackgroundImageModel() {
-  //   initialize();
-  // }
-
-  // void initialize() async {
-  //   _appDataFilePath = await _getDataDirectoryPath();
-  //   Directory appDataDir = Directory(_appDataFilePath);
-
-  //   if (await appDataDir.exists()) {
-  //     List<FileSystemEntity> filesInDirectory = appDataDir.listSync();
-  //     filesInDirectory.forEach((fileSystemEntity) {
-  //       if (basename(fileSystemEntity.path).contains('custombgr')) {
-  //         _filePath = fileSystemEntity.path;
-  //       }
-  //     });
-  //   }
-  // }
 
   /// We only need this because the path_provider plugin is not nullsafety yet
   Future<String> _getDataDirectoryPath() async {
@@ -100,10 +92,11 @@ class BackgroundImageModel extends ChangeNotifier {
     return dataDirectoryPath;
   }
 
-  void resetToDefaultBackgroundImage() async {
+  Future<void> resetToDefaultBackgroundImage() async {
     File file = File(_filePath);
     await file.delete();
     _filePath = '';
+    _currentFileImageProvider = null;
     notifyListeners();
   }
 }

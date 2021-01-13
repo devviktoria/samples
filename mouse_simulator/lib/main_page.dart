@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import 'animated_shape.dart';
 import 'animation_can_run_model.dart';
 import 'background_image_model.dart';
-import 'settings_form.dart';
+import 'background_image_form.dart';
 
 class MainPage extends StatelessWidget {
   @override
@@ -48,7 +48,7 @@ class MainPage extends StatelessWidget {
       context,
       MaterialPageRoute(
         builder: (context) {
-          return SettingsForm();
+          return BackgroundImageForm();
         },
       ),
     );
