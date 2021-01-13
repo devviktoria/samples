@@ -9,8 +9,6 @@ class BackgroundImageModel extends ChangeNotifier {
   String _appDataFilePath = '';
   FileImage? _currentFileImageProvider;
 
-//This is not gets refreshed should put into build
-
   ImageProvider<Object> get backgroundImageProvider {
     if (_filePath.isEmpty || _currentFileImageProvider == null) {
       return AssetImage(
@@ -30,6 +28,18 @@ class BackgroundImageModel extends ChangeNotifier {
   }
 
   bool get defaultImageIsUsed => _filePath.isEmpty;
+
+  int get fileImageHashCode {
+    if (_currentFileImageProvider == null) {
+      return 0;
+    }
+    FileImage currentFileImageProvider = _currentFileImageProvider as FileImage;
+    return hashValues(
+      currentFileImageProvider.file.path,
+      currentFileImageProvider.scale,
+      currentFileImageProvider.file.lastModifiedSync(),
+    );
+  }
 
   void selectNewFile(String newPath) async {
     if (_appDataFilePath.isEmpty) {
@@ -52,8 +62,8 @@ class BackgroundImageModel extends ChangeNotifier {
 
       _filePath = filePath;
 
+      await file.delete();
       _currentFileImageProvider = FileImage(File(_filePath));
-
       notifyListeners();
     }
   }

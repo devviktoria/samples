@@ -87,11 +87,9 @@ class _SettingsFormState extends State<SettingsForm> {
         height: 256,
       );
     } else {
-      ImageCache().clear();
-
-      // print(imageCache.liveImageCount);
       return Image(
         image: backgroundImageModel.backgroundImageProvider,
+        key: ValueKey(backgroundImageModel.fileImageHashCode),
         width: 160,
         height: 256,
       );
