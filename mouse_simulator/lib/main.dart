@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'animation_can_run_model.dart';
+import 'animation_controller_model.dart';
 import 'background_image_model.dart';
 import 'main_page.dart';
 
@@ -15,7 +15,7 @@ Future<void> main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(
-          create: (context) => AnimationCanRunModel(),
+          create: (context) => AnimationControllerModel(),
         ),
         ChangeNotifierProvider.value(
           value: backgroundImageModel,

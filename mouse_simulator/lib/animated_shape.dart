@@ -2,7 +2,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'animation_can_run_model.dart';
+import 'animation_controller_model.dart';
 import 'position_calculator.dart';
 import 'point_angle_data.dart';
 
@@ -15,6 +15,12 @@ class _AnimatedShapeState extends State<AnimatedShape>
     with TickerProviderStateMixin {
   static const Size _objectSize = Size(178.0, 64.0);
 
+  final Map<AnimationSpeed, int> _animationDurationForSpeed = {
+    AnimationSpeed.slow: 2000,
+    AnimationSpeed.normal: 1000,
+    AnimationSpeed.fast: 500,
+  };
+
   double _initialPositionX = _objectSize.width + 10;
   double _initialPositionY = _objectSize.height + 10;
   double _endPositionX = _objectSize.width + 50.0;
@@ -26,7 +32,7 @@ class _AnimatedShapeState extends State<AnimatedShape>
   int _pressedCount = 0;
 
   late AnimationController _animationController = AnimationController(
-    duration: Duration(seconds: 1),
+    duration: Duration(milliseconds: 1000),
     vsync: this,
   );
 
@@ -45,10 +51,10 @@ class _AnimatedShapeState extends State<AnimatedShape>
 
   @override
   Widget build(BuildContext context) {
-    AnimationCanRunModel animationCanRunModel =
-        context.watch<AnimationCanRunModel>();
+    AnimationControllerModel animationControllerModel =
+        context.watch<AnimationControllerModel>();
 
-    if (animationCanRunModel.animationCanRun) {
+    if (animationControllerModel.animationCanRun) {
       _continueAnimationController();
     } else {
       _stopAnimationController();
@@ -147,6 +153,11 @@ class _AnimatedShapeState extends State<AnimatedShape>
         _endPositionX = newPointAngleData.point.x;
         _endPositionY = newPointAngleData.point.y;
 
+        int animationDuration = _animationDurationForSpeed[
+            Provider.of<AnimationControllerModel>(context, listen: false)
+                .animationSpeed] as int;
+        _animationController.duration =
+            Duration(milliseconds: animationDuration);
         _animationController.reset();
         _animationController.forward();
       });
@@ -164,7 +175,7 @@ class _AnimatedShapeState extends State<AnimatedShape>
   void _pressedChanged(int value) {
     _pressedCount += value;
 
-    if (!Provider.of<AnimationCanRunModel>(context, listen: false)
+    if (!Provider.of<AnimationControllerModel>(context, listen: false)
         .animationCanRun) {
       return;
     }
