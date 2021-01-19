@@ -13,18 +13,17 @@ class AnimatedShape extends StatefulWidget {
 
 class _AnimatedShapeState extends State<AnimatedShape>
     with TickerProviderStateMixin {
-  static const Size _objectSize = Size(178.0, 64.0);
-
   final Map<AnimationSpeed, int> _animationDurationForSpeed = {
     AnimationSpeed.slow: 2000,
     AnimationSpeed.normal: 1000,
     AnimationSpeed.fast: 500,
   };
 
-  double _initialPositionX = _objectSize.width + 10;
-  double _initialPositionY = _objectSize.height + 10;
-  double _endPositionX = _objectSize.width + 50.0;
-  double _endPositionY = _objectSize.height + 50.0;
+  Size _objectSize = Size(178.0, 64.0);
+  late double _initialPositionX = _objectSize.width + 10;
+  late double _initialPositionY = _objectSize.height + 10;
+  late double _endPositionX = _objectSize.width + 50.0;
+  late double _endPositionY = _objectSize.height + 50.0;
 
   double _beginClockwiseMouseAngle = 0;
   double _endClockwiseMouseAngle = pi / 4;
@@ -62,6 +61,8 @@ class _AnimatedShapeState extends State<AnimatedShape>
 
     return LayoutBuilder(builder: (context, constraints) {
       _containerSize = constraints.biggest;
+      _objectSize =
+          Size(_containerSize.width / 4.5, _containerSize.width / 12.375);
       _positionCalculator = PositionCalculator(
         _endPositionX,
         _endPositionY,

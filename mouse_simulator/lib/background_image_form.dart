@@ -72,7 +72,7 @@ class _BackgroundImageFormState extends State<BackgroundImageForm> {
   Image buildBackgroundImage(BackgroundImageModel backgroundImageModel) {
     if (backgroundImageModel.defaultImageIsUsed) {
       return Image.asset(
-        'assets/images/defaultbackgroung.png',
+        'assets/images/defaultbackground.png',
         width: 160,
         height: 256,
       );

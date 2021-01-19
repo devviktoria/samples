@@ -12,7 +12,7 @@ class BackgroundImageModel extends ChangeNotifier {
   ImageProvider<Object> get backgroundImageProvider {
     if (_filePath.isEmpty || _currentFileImageProvider == null) {
       return AssetImage(
-        'assets/images/defaultbackgroung.png',
+        'assets/images/defaultbackground.png',
       );
     } else {
       return _currentFileImageProvider as FileImage;
