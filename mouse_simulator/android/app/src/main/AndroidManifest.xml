@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.devviktoria.mouse_simulator">
    <application
-        android:label="mouse_simulator"
+        android:label="Mouse Simulator"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
