@@ -9,6 +9,6 @@ When a cat catches a mouse for a while he holds it in his mouth or grabs it with
 This application is a cat toy app. The goal of the app is to simulate the above mouse behavior for cats. For more information see the [Requirement Specification](requirements/requirements.md)
 
 ## Technical information about the app
-This app is written in Flutter. It targets the Android platform. I am using Visual Studio Code to develop it. 
+This app is written in Flutter, in the null safety version of it. It targets the Android platform. I am using Visual Studio Code to develop it. 
 
-I started working on this project not long time ago so it is in very early stages.
+This project is no quite finished yet, but I think it getting close to being finished.

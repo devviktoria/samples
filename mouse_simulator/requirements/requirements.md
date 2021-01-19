@@ -33,22 +33,34 @@ This application is a cat toy app. The goal of the app is to simulate the above 
 
 1. The play area shall have a background image. See also the [Background changer dialogue](#backgroundchangerdialogue) section.
 
-### 4. Application menu
+1. The application should have a unique theme.
+
+### 4. Internationalization
+1. The application should be translatable. The default language is English. The Hungarian translation should be provided too.
+
+### 5. Application menu
 
 The application has a menu with the following menu elements:
 
-1. Stop - If the human user taps on this the mouse shape stops moving, and the label of this menu item changes to Start.
+1. Stop - If the human user taps on this the mouse shape stops moving, and the label of this menu item changes to Continue.
 
-1. Start - If the human user taps on this the mouse shape starts moving, and the label of this menu item changes to Stop.
+1. Continue - If the human user taps on this the mouse shape starts moving, and the label of this menu item changes to Stop.
 
-1. Slow - If the human user taps on this the animation of the mouse shape becomes slow [TODO: Define the exact timing of slow animation.]
+1. Slow - If the human user taps on this the animation of the mouse shape becomes slow, which is half of the normal speed.
 
-1. Normal - If the human user taps on this the animation of the mouse shape becomes normal speed [TODO: Define the exact timing of normal speed animation.]
+1. Normal - If the human user taps on this the animation of the mouse shape becomes normal speed.
 
-1. Fast - If the human user taps on this the animation of the mouse shape becomes fast [TODO: Define the exact timing of fast animation.]
+1. Fast - If the human user taps on this the animation of the mouse shape becomes fast, which is two times faster then the normal speed.
 
-1. Background - If the human user taps on this the mouse shape stops moving, and the background changing dialog appears.
+1. Background image - If the human user taps on this the background changing dialog appears. See also the [Background changer dialogue](#backgroundchangerdialogue) section.
 
-### <a name="backgroundchangerdialogue"></a> 5. Background changer dialogue
+1. Language - If the human user taps on this the language changing dialog appears. See also the [Language changer dialogue](#languagechangerdialogue) section.
+
+### <a name="backgroundchangerdialogue"></a> 6. Background changer dialogue
 
 1. The human user shall be able to choose between built in images and images store on the local device. The chosen image shall be used for the play area's background.
+
+### <a name="languagechangerdialogue"></a> 7. Language changer dialogue
+
+1. The human user shall be able to choose between English and Hungarian languages.
+
