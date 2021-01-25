@@ -19,10 +19,6 @@ class BackgroundImageModel extends ChangeNotifier {
     }
   }
 
-  String get fileNameToDisplay {
-    return _filePath.isEmpty ? 'The builtin image' : 'Custom image';
-  }
-
   String get filePath {
     return _filePath;
   }
@@ -81,7 +77,7 @@ class BackgroundImageModel extends ChangeNotifier {
   /// We only need this because the path_provider plugin is not nullsafety yet
   Future<String> _getDataDirectoryPath() async {
     final MethodChannel platform =
-        MethodChannel('com.devviktoria.mouse_simulator/datadirecorypath');
+        MethodChannel('com.devviktoria.mouse_simulator/androidchannel');
     String dataDirectoryPath;
     try {
       dataDirectoryPath = await platform.invokeMethod('getDataDirectoryPath');

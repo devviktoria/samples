@@ -1,0 +1,15 @@
+{
+  "mouse_simulator": "Mouse Simulator",
+  "background_image" : "Background image",
+  "app_background_image_is" : "The app's background image is",
+  "select_background_image" : "Select background image",
+  "reset_to_builtin_image" : "Reset to use the builtin image",
+  "the_builtin_image" : "The builtin image",
+  "custom_image" : "Custom image",
+  "stop" : "Stop",
+  "continue_text" : "Continue",
+  "slow" : "Slow",
+  "normal" : "Normal",
+  "fast" : "Fast",
+  "app_error_message" : "Error occured in the Mouse Simulator!\nSorry for the inconvenience."
+}

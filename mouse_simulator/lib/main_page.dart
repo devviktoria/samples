@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 import 'animated_shape.dart';
 import 'animation_controller_model.dart';
 import 'background_image_model.dart';
@@ -14,7 +16,7 @@ class MainPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Mouse Simulator'),
+        title: Text(AppLocalizations.of(context)?.mouse_simulator as String),
       ),
       endDrawer: Drawer(
           child: ListView(
@@ -32,7 +34,8 @@ class MainPage extends StatelessWidget {
           ),
           ListTile(
             leading: Icon(Icons.photo_outlined),
-            title: Text('Background image'),
+            title:
+                Text(AppLocalizations.of(context)?.background_image as String),
             onTap: () {
               _openSettingsForm(context);
             },
@@ -69,11 +72,14 @@ class _StartStopListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<AnimationControllerModel>(
         builder: (context, animationCanRun, child) {
+      String? menuText = animationCanRun.animationCanRun
+          ? AppLocalizations.of(context)?.stop
+          : AppLocalizations.of(context)?.continue_text;
       return ListTile(
           leading: animationCanRun.animationCanRun
               ? Icon(Icons.stop_circle_outlined)
               : Icon(Icons.play_circle_outline),
-          title: Text(animationCanRun.animationCanRun ? 'Stop' : 'Continue'),
+          title: Text(menuText as String),
           onTap: () {
             animationCanRun.animationCanRun = !animationCanRun.animationCanRun;
             Navigator.pop(context);
@@ -92,8 +98,8 @@ class _AnimationSpeedListTile extends StatelessWidget {
     return Consumer<AnimationControllerModel>(
         builder: (context, animationControllerModel, child) {
       return ListTile(
-          leading: getIconForAnimationSpeed(animationSpeed),
-          title: Text(animationSpeed.toString()),
+          leading: _getIconForAnimationSpeed(animationSpeed),
+          title: Text(_getTextForAnimationSpeed(context)),
           enabled: animationControllerModel.animationSpeed != animationSpeed,
           onTap: () {
             animationControllerModel.animationSpeed = animationSpeed;
@@ -102,7 +108,18 @@ class _AnimationSpeedListTile extends StatelessWidget {
     });
   }
 
-  Widget getIconForAnimationSpeed(AnimationSpeed animationSpeed) {
+  String _getTextForAnimationSpeed(BuildContext context) {
+    switch (animationSpeed) {
+      case AnimationSpeed.slow:
+        return AppLocalizations.of(context)?.slow as String;
+      case AnimationSpeed.normal:
+        return AppLocalizations.of(context)?.normal as String;
+      case AnimationSpeed.fast:
+        return AppLocalizations.of(context)?.fast as String;
+    }
+  }
+
+  Widget _getIconForAnimationSpeed(AnimationSpeed animationSpeed) {
     switch (animationSpeed) {
       case AnimationSpeed.slow:
         return Transform(

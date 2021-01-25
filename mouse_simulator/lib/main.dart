@@ -4,38 +4,21 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'animation_controller_model.dart';
 import 'background_image_model.dart';
+import 'language_preferences_model.dart';
 import 'main_page.dart';
 
 Future<void> main() async {
   FlutterError.onError = (FlutterErrorDetails details) {
-    debugPrint('Error in the app!!!!!!!!');
+    debugPrint('Error in the app!');
     FlutterError.dumpErrorToConsole(details);
     exit(1);
   };
-
-  ErrorWidget.builder = (FlutterErrorDetails details) {
-    if (!kReleaseMode) {
-      return Container(
-        color: Colors.white,
-        alignment: Alignment.center,
-        child: Text(
-          'Error occured in the Mouse Simulator!\nSorry for the inconvenience.',
-          style: TextStyle(
-            color: Colors.red[900],
-            fontSize: 20.0,
-            decoration: TextDecoration.none,
-          ),
-        ),
-      );
-    }
-
-    return ErrorWidget(details.exception);
-  };
-
   void _dumpErrorToConsole(Object error, StackTrace? stackTrace) {
     debugPrint('Error in the app');
     debugPrint(error.toString());
@@ -45,6 +28,40 @@ Future<void> main() async {
       debugPrint('No stacktrace');
     }
   }
+
+  ErrorWidget.builder = (FlutterErrorDetails details) {
+    if (!kReleaseMode) {
+      try {
+        return Builder(builder: (context) {
+          String? errorText = AppLocalizations.of(context)?.app_error_message;
+          if (errorText == null) {
+            errorText =
+                'Error occured in the Mouse Simulator!\nSorry for the inconvenience.';
+          }
+          return Container(
+            color: Colors.white,
+            alignment: Alignment.center,
+            child: Text(
+              errorText,
+              style: TextStyle(
+                color: Colors.red[900],
+                fontSize: 20.0,
+                decoration: TextDecoration.none,
+              ),
+            ),
+          );
+        });
+      } catch (e) {
+        debugPrint('Fatal error in the app!');
+        _dumpErrorToConsole(e, null);
+        //_dumpErrorToConsole(details, null);
+        //FlutterError.dumpErrorToConsole(details);
+        exit(1);
+      }
+    }
+
+    return ErrorWidget(details.exception);
+  };
 
   WidgetsFlutterBinding.ensureInitialized();
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
@@ -57,6 +74,27 @@ Future<void> main() async {
     exit(1);
   }
 
+  LanguagePreferencesModel languagePreferencesModel =
+      LanguagePreferencesModel();
+  try {
+    await languagePreferencesModel.initialize();
+  } catch (e) {
+    _dumpErrorToConsole(e, null);
+    exit(1);
+  }
+
+  MaterialApp(
+    localizationsDelegates: [
+      AppLocalizations.delegate,
+      GlobalMaterialLocalizations.delegate,
+      GlobalWidgetsLocalizations.delegate,
+    ],
+    supportedLocales: [
+      const Locale('en', ''),
+      const Locale('es', ''),
+    ],
+  );
+
   runZonedGuarded<Future<void>>(() async {
     runApp(
       MultiProvider(
@@ -66,6 +104,9 @@ Future<void> main() async {
           ),
           ChangeNotifierProvider.value(
             value: backgroundImageModel,
+          ),
+          ChangeNotifierProvider.value(
+            value: languagePreferencesModel,
           )
         ],
         child: MyApp(),
@@ -81,11 +122,24 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Mouse Simulator',
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      localeResolutionCallback: (locale, supportedLocales) =>
+          _appLocale(context),
+      title: AppLocalizations.of(context)?.mouse_simulator ?? 'Mouse Simulator',
+      onGenerateTitle: (BuildContext context) =>
+          AppLocalizations.of(context)?.mouse_simulator ?? 'Mouse Simulator',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
       home: MainPage(),
     );
+  }
+
+  Locale _appLocale(BuildContext context) {
+    String languageCode =
+        Provider.of<LanguagePreferencesModel>(context, listen: false)
+            .currentLanguage;
+    return Locale(languageCode);
   }
 }

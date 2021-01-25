@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'background_image_model.dart';
 
 class BackgroundImageForm extends StatefulWidget {
@@ -16,30 +17,37 @@ class _BackgroundImageFormState extends State<BackgroundImageForm> {
     BackgroundImageModel backgroundImageModel =
         context.watch<BackgroundImageModel>();
 
+    String? imageText = backgroundImageModel.defaultImageIsUsed
+        ? AppLocalizations.of(context)?.the_builtin_image
+        : AppLocalizations.of(context)?.custom_image;
+
     return Scaffold(
       appBar: AppBar(
-        title: Text('Background image'),
+        title: Text(AppLocalizations.of(context)?.background_image as String),
       ),
       body: ListView(
         children: <Widget>[
           ListTile(
-            title: const Text("The app's background image is:"),
+            title: Text(
+                '${AppLocalizations.of(context)?.app_background_image_is as String}:'),
           ),
           buildBackgroundImage(backgroundImageModel),
           Center(
-            child: Text('${backgroundImageModel.fileNameToDisplay}'),
+            child: Text(imageText as String),
           ),
           Padding(
             padding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
             child: ElevatedButton(
-              child: Text('Select background image'),
+              child: Text(AppLocalizations.of(context)?.select_background_image
+                  as String),
               onPressed: () => _selectNewFile(context),
             ),
           ),
           Padding(
             padding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
             child: OutlinedButton(
-              child: Text('Reset to use the builtin image'),
+              child: Text(AppLocalizations.of(context)?.reset_to_builtin_image
+                  as String),
               onPressed: backgroundImageModel.defaultImageIsUsed
                   ? null
                   : () {

@@ -1,0 +1,15 @@
+{
+  "mouse_simulator": "Egér szimulátor",
+  "background_image" : "Háttérkép",
+  "app_background_image_is" : "Az alkalmazás háttérképe",
+  "select_background_image" : "Válassz háttérképet",
+  "reset_to_builtin_image" : "A beépített kép visszaállítása",
+  "the_builtin_image" : "A beépített kép",
+  "custom_image" : "Egyedi kép",
+  "stop" : "Állj",
+  "continue_text" : "Folytasd",
+  "slow" : "Lassú",
+  "normal" : "Normális",
+  "fast" : "Gyors",
+  "app_error_message" : "Hiba történt az Egér Szimulátorban!\nElnézést a kényelmetlenségért."
+}
