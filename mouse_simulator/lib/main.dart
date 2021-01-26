@@ -116,7 +116,6 @@ Future<void> main() async {
 }
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return Consumer<LanguagePreferencesModel>(
@@ -131,8 +130,15 @@ class MyApp extends StatelessWidget {
             AppLocalizations.of(context)?.mouse_simulator ?? 'Mouse Simulator',
         onGenerateTitle: (BuildContext context) =>
             AppLocalizations.of(context)?.mouse_simulator ?? 'Mouse Simulator',
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
+        theme: Theme.of(context).copyWith(
+          primaryColor: Colors.lightGreen[900],
+          buttonColor: Colors.lightGreen[900],
+          backgroundColor: Colors.lightGreen[50],
+          dialogBackgroundColor: Colors.lightGreen[50],
+          scaffoldBackgroundColor: Colors.lightGreen[50],
+          canvasColor: Colors.lightGreen[50],
+          colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.lightGreen),
+          toggleableActiveColor: Colors.lightGreen,
         ),
         home: MainPage(),
       );

@@ -18,7 +18,10 @@ class _LanguageFormState extends State<LanguageForm> {
     List<Widget> localeRadios = LanguagePreferencesModel.supportedLocales
         .map(
           (locale) => RadioListTile<String>(
-            title: Text(getTextForLanguage(context, locale.languageCode)),
+            title: Text(
+              getTextForLanguage(context, locale.languageCode),
+              style: Theme.of(context).textTheme.subtitle1,
+            ),
             value: locale.languageCode,
             groupValue: languagePreferencesModel.currentLanguageCode,
             onChanged: (String? value) {

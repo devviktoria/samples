@@ -35,15 +35,20 @@ class MainPage extends StatelessWidget {
           ),
           ListTile(
             leading: Icon(Icons.photo_outlined),
-            title:
-                Text(AppLocalizations.of(context)?.background_image as String),
+            title: Text(
+              AppLocalizations.of(context)?.background_image as String,
+              style: Theme.of(context).textTheme.subtitle1,
+            ),
             onTap: () {
               _openSettingsForm(context);
             },
           ),
           ListTile(
             leading: Icon(Icons.language),
-            title: Text(AppLocalizations.of(context)?.language as String),
+            title: Text(
+              AppLocalizations.of(context)?.language as String,
+              style: Theme.of(context).textTheme.subtitle1,
+            ),
             onTap: () {
               _openLanguageForm(context);
             },
@@ -99,7 +104,10 @@ class _StartStopListTile extends StatelessWidget {
           leading: animationCanRun.animationCanRun
               ? Icon(Icons.stop_circle_outlined)
               : Icon(Icons.play_circle_outline),
-          title: Text(menuText as String),
+          title: Text(
+            menuText as String,
+            style: Theme.of(context).textTheme.subtitle1,
+          ),
           onTap: () {
             animationCanRun.animationCanRun = !animationCanRun.animationCanRun;
             Navigator.pop(context);
@@ -119,7 +127,10 @@ class _AnimationSpeedListTile extends StatelessWidget {
         builder: (context, animationControllerModel, child) {
       return ListTile(
           leading: _getIconForAnimationSpeed(animationSpeed),
-          title: Text(_getTextForAnimationSpeed(context)),
+          title: Text(
+            _getTextForAnimationSpeed(context),
+            style: Theme.of(context).textTheme.subtitle1,
+          ),
           enabled: animationControllerModel.animationSpeed != animationSpeed,
           onTap: () {
             animationControllerModel.animationSpeed = animationSpeed;

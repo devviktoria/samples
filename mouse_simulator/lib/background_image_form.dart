@@ -29,7 +29,9 @@ class _BackgroundImageFormState extends State<BackgroundImageForm> {
         children: <Widget>[
           ListTile(
             title: Text(
-                '${AppLocalizations.of(context)?.app_background_image_is as String}:'),
+              '${AppLocalizations.of(context)?.app_background_image_is as String}:',
+              style: Theme.of(context).textTheme.subtitle1,
+            ),
           ),
           buildBackgroundImage(backgroundImageModel),
           Center(
@@ -38,16 +40,20 @@ class _BackgroundImageFormState extends State<BackgroundImageForm> {
           Padding(
             padding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
             child: ElevatedButton(
-              child: Text(AppLocalizations.of(context)?.select_background_image
-                  as String),
+              child: Text(
+                AppLocalizations.of(context)?.select_background_image as String,
+                style: Theme.of(context).textTheme.subtitle1,
+              ),
               onPressed: () => _selectNewFile(context),
             ),
           ),
           Padding(
             padding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
             child: OutlinedButton(
-              child: Text(AppLocalizations.of(context)?.reset_to_builtin_image
-                  as String),
+              child: Text(
+                AppLocalizations.of(context)?.reset_to_builtin_image as String,
+                style: Theme.of(context).textTheme.subtitle1,
+              ),
               onPressed: backgroundImageModel.defaultImageIsUsed
                   ? null
                   : () {
