@@ -11,5 +11,8 @@
   "slow" : "Slow",
   "normal" : "Normal",
   "fast" : "Fast",
-  "app_error_message" : "Error occured in the Mouse Simulator!\nSorry for the inconvenience."
+  "app_error_message" : "Error occured in the Mouse Simulator!\nSorry for the inconvenience.",
+  "language": "Language",
+  "english":"English",
+  "hungarian":"Magyar"
 }

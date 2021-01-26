@@ -11,5 +11,8 @@
   "slow" : "Lassú",
   "normal" : "Normális",
   "fast" : "Gyors",
-  "app_error_message" : "Hiba történt az Egér Szimulátorban!\nElnézést a kényelmetlenségért."
+  "app_error_message" : "Hiba történt az Egér Szimulátorban!\nElnézést a kényelmetlenségért.",
+  "language": "Nyelv",
+  "english":"English",
+  "hungarian":"Magyar"
 }

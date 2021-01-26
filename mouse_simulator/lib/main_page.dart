@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mouse_simulator/language_form.dart';
 import 'package:provider/provider.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -40,6 +41,13 @@ class MainPage extends StatelessWidget {
               _openSettingsForm(context);
             },
           ),
+          ListTile(
+            leading: Icon(Icons.language),
+            title: Text(AppLocalizations.of(context)?.language as String),
+            onTap: () {
+              _openLanguageForm(context);
+            },
+          ),
         ],
       )),
       body: Container(
@@ -61,6 +69,18 @@ class MainPage extends StatelessWidget {
       MaterialPageRoute(
         builder: (context) {
           return BackgroundImageForm();
+        },
+      ),
+    );
+  }
+
+  void _openLanguageForm(BuildContext context) {
+    Navigator.pop(context);
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) {
+          return LanguageForm();
         },
       ),
     );

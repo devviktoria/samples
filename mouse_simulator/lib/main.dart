@@ -91,7 +91,7 @@ Future<void> main() async {
     ],
     supportedLocales: [
       const Locale('en', ''),
-      const Locale('es', ''),
+      const Locale('hu', ''),
     ],
   );
 
@@ -121,25 +121,27 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
-      localeResolutionCallback: (locale, supportedLocales) =>
-          _appLocale(context),
-      title: AppLocalizations.of(context)?.mouse_simulator ?? 'Mouse Simulator',
-      onGenerateTitle: (BuildContext context) =>
-          AppLocalizations.of(context)?.mouse_simulator ?? 'Mouse Simulator',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: MainPage(),
-    );
+    return Consumer<LanguagePreferencesModel>(
+        builder: (context, languagePreferencesModel, child) {
+      return MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        locale: Locale(languagePreferencesModel.currentLanguageCode),
+        localeResolutionCallback: (locale, supportedLocales) =>
+            _appLocale(languagePreferencesModel),
+        title:
+            AppLocalizations.of(context)?.mouse_simulator ?? 'Mouse Simulator',
+        onGenerateTitle: (BuildContext context) =>
+            AppLocalizations.of(context)?.mouse_simulator ?? 'Mouse Simulator',
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+        ),
+        home: MainPage(),
+      );
+    });
   }
 
-  Locale _appLocale(BuildContext context) {
-    String languageCode =
-        Provider.of<LanguagePreferencesModel>(context, listen: false)
-            .currentLanguage;
-    return Locale(languageCode);
+  Locale _appLocale(LanguagePreferencesModel languagePreferencesModel) {
+    return Locale(languagePreferencesModel.currentLanguageCode);
   }
 }
