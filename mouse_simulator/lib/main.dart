@@ -89,10 +89,7 @@ Future<void> main() async {
       GlobalMaterialLocalizations.delegate,
       GlobalWidgetsLocalizations.delegate,
     ],
-    supportedLocales: [
-      const Locale('en', ''),
-      const Locale('hu', ''),
-    ],
+    supportedLocales: LanguagePreferencesModel.supportedLocales,
   );
 
   runZonedGuarded<Future<void>>(() async {

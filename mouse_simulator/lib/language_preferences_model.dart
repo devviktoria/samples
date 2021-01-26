@@ -2,20 +2,20 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter/services.dart';
 
-enum SupportedLanguageCode { en, hu }
-
 class LanguagePreferencesModel extends ChangeNotifier {
-  static const SupportedLanguageCode _defaultLanguage =
-      SupportedLanguageCode.hu;
-  SupportedLanguageCode _supportedLanguageCode = _defaultLanguage;
+  static const List<Locale> supportedLocales = [
+    const Locale('en', ''),
+    const Locale('hu', ''),
+  ];
 
-  String get currentLanguageCode => describeEnum(_supportedLanguageCode);
-  SupportedLanguageCode get supportedLanguageCode => _supportedLanguageCode;
+  final String _defaultLanguageCode = supportedLocales[0].languageCode;
+  late String _currentLanguageCode = _defaultLanguageCode;
+
+  String get currentLanguageCode => _currentLanguageCode;
 
   Future<void> initialize() async {
     String _currentLanguagePreference = await _getLocalePreference();
-    _supportedLanguageCode =
-        getSupportedLanguageCodeString(_currentLanguagePreference);
+    _currentLanguageCode = _currentLanguagePreference;
   }
 
   /// We only need this because the shared_preferences plugin is not nullsafety yet
@@ -27,28 +27,18 @@ class LanguagePreferencesModel extends ChangeNotifier {
       localeCode = await platform
           .invokeMethod('getSharedPreferenceStringValue', <String, dynamic>{
         'key': 'locale',
-        'defaultValue': describeEnum(_defaultLanguage),
+        'defaultValue': _defaultLanguageCode,
       });
     } on PlatformException {
-      localeCode = describeEnum(_defaultLanguage);
+      localeCode = _defaultLanguageCode;
     }
 
     return localeCode;
   }
 
-  SupportedLanguageCode getSupportedLanguageCodeString(String languageCode) {
-    switch (languageCode) {
-      case 'hu':
-        return SupportedLanguageCode.hu;
-      default:
-        return SupportedLanguageCode.en;
-    }
-  }
-
-  Future<void> setSupportedLanguageCode(
-      SupportedLanguageCode supportedLanguageCode) async {
-    if (supportedLanguageCode != _supportedLanguageCode) {
-      _supportedLanguageCode = supportedLanguageCode;
+  Future<void> setSupportedLanguageCode(String? newLanguageCode) async {
+    if (newLanguageCode != null && newLanguageCode != _currentLanguageCode) {
+      _currentLanguageCode = newLanguageCode;
       notifyListeners();
     }
   }

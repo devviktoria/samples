@@ -15,38 +15,38 @@ class _LanguageFormState extends State<LanguageForm> {
     LanguagePreferencesModel languagePreferencesModel =
         context.watch<LanguagePreferencesModel>();
 
-    // String? imageText = backgroundImageModel.defaultImageIsUsed
-    //     ? AppLocalizations.of(context)?.the_builtin_image
-    //     : AppLocalizations.of(context)?.custom_image;
+    List<Widget> localeRadios = LanguagePreferencesModel.supportedLocales
+        .map(
+          (locale) => RadioListTile<String>(
+            title: Text(getTextForLanguage(context, locale.languageCode)),
+            value: locale.languageCode,
+            groupValue: languagePreferencesModel.currentLanguageCode,
+            onChanged: (String? value) {
+              languagePreferencesModel.setSupportedLanguageCode(value);
+              Navigator.pop(context);
+            },
+          ),
+        )
+        .toList();
 
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)?.language as String),
       ),
       body: ListView(
-        children: <Widget>[
-          RadioListTile<SupportedLanguageCode>(
-            title: Text(AppLocalizations.of(context)?.english as String),
-            value: SupportedLanguageCode.en,
-            groupValue: languagePreferencesModel.supportedLanguageCode,
-            onChanged: (SupportedLanguageCode? value) {
-              languagePreferencesModel
-                  .setSupportedLanguageCode(value as SupportedLanguageCode);
-              Navigator.pop(context);
-            },
-          ),
-          RadioListTile<SupportedLanguageCode>(
-            title: Text(AppLocalizations.of(context)?.hungarian as String),
-            value: SupportedLanguageCode.hu,
-            groupValue: languagePreferencesModel.supportedLanguageCode,
-            onChanged: (SupportedLanguageCode? value) {
-              languagePreferencesModel
-                  .setSupportedLanguageCode(value as SupportedLanguageCode);
-              Navigator.pop(context);
-            },
-          ),
-        ],
+        children: localeRadios,
       ),
     );
+  }
+
+  String getTextForLanguage(BuildContext context, String languageCode) {
+    switch (languageCode) {
+      case 'en':
+        return AppLocalizations.of(context)?.language as String;
+      case 'hu':
+        return AppLocalizations.of(context)?.hungarian as String;
+      default:
+        return languageCode;
+    }
   }
 }
