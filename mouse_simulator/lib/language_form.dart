@@ -42,7 +42,7 @@ class _LanguageFormState extends State<LanguageForm> {
   String getTextForLanguage(BuildContext context, String languageCode) {
     switch (languageCode) {
       case 'en':
-        return AppLocalizations.of(context)?.language as String;
+        return AppLocalizations.of(context)?.english as String;
       case 'hu':
         return AppLocalizations.of(context)?.hungarian as String;
       default:

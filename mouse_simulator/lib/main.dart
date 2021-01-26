@@ -19,6 +19,7 @@ Future<void> main() async {
     FlutterError.dumpErrorToConsole(details);
     exit(1);
   };
+
   void _dumpErrorToConsole(Object error, StackTrace? stackTrace) {
     debugPrint('Error in the app');
     debugPrint(error.toString());

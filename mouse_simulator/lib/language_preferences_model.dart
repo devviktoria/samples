@@ -18,6 +18,14 @@ class LanguagePreferencesModel extends ChangeNotifier {
     _currentLanguageCode = _currentLanguagePreference;
   }
 
+  Future<void> setSupportedLanguageCode(String? newLanguageCode) async {
+    if (newLanguageCode != null && newLanguageCode != _currentLanguageCode) {
+      _currentLanguageCode = newLanguageCode;
+      notifyListeners();
+      _saveLocalePreference(newLanguageCode);
+    }
+  }
+
   /// We only need this because the shared_preferences plugin is not nullsafety yet
   Future<String> _getLocalePreference() async {
     final MethodChannel platform =
@@ -25,7 +33,7 @@ class LanguagePreferencesModel extends ChangeNotifier {
     String localeCode;
     try {
       localeCode = await platform
-          .invokeMethod('getSharedPreferenceStringValue', <String, dynamic>{
+          .invokeMethod('getSharedPreferenceStringValue', <String, String>{
         'key': 'locale',
         'defaultValue': _defaultLanguageCode,
       });
@@ -36,10 +44,18 @@ class LanguagePreferencesModel extends ChangeNotifier {
     return localeCode;
   }
 
-  Future<void> setSupportedLanguageCode(String? newLanguageCode) async {
-    if (newLanguageCode != null && newLanguageCode != _currentLanguageCode) {
-      _currentLanguageCode = newLanguageCode;
-      notifyListeners();
+  /// We only need this because the shared_preferences plugin is not nullsafety yet
+  Future<void> _saveLocalePreference(String value) async {
+    final MethodChannel platform =
+        MethodChannel('com.devviktoria.mouse_simulator/androidchannel');
+    try {
+      await platform
+          .invokeMethod('saveSharedPreferenceStringValue', <String, String>{
+        'key': 'locale',
+        'value': value,
+      });
+    } on PlatformException catch (e) {
+      debugPrint(e.toString());
     }
   }
 }

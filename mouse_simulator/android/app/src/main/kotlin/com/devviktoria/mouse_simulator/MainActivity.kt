@@ -23,6 +23,11 @@ class MainActivity : FlutterActivity() {
                 val defaultValue: String = call.argument<String>("defaultValue") as String
                 val stringValue = getSharedPreferenceStringValue(key, defaultValue)
                 result.success(stringValue)
+            } else if (call.method == "saveSharedPreferenceStringValue") {
+                val key: String = call.argument<String>("key") as String
+                val value: String = call.argument<String>("value") as String
+                saveSharedPreferenceStringValue(key, value)
+                result.success(null)
             } else {
                 result.notImplemented()
             }
@@ -34,10 +39,10 @@ class MainActivity : FlutterActivity() {
         val dataDirectoryPath: String
         dataDirectoryPath = this.filesDir.getPath()
 
-        //dataDirectoryPath = this.filesDir.getCanonicalPath()
         return dataDirectoryPath
     }
 
+    /// We only need this because the shared_preferences plugin is not nullsafety yet
     private fun getSharedPreferenceStringValue(key: String, defaultValue: String): String {
         if (sharedPreferences == null) {
             sharedPreferences = this.getSharedPreferences("prefs", MODE_PRIVATE)
@@ -50,5 +55,17 @@ class MainActivity : FlutterActivity() {
         }
 
         return stringValue
+    }
+
+    /// We only need this because the shared_preferences plugin is not nullsafety yet
+    private fun saveSharedPreferenceStringValue(key: String, value: String) {
+        if (sharedPreferences == null) {
+            sharedPreferences = this.getSharedPreferences("prefs", MODE_PRIVATE)
+        }
+
+        val preferenceEditor: android.content.SharedPreferences.Editor? = sharedPreferences?.edit()
+
+        preferenceEditor?.putString(key, value)
+        preferenceEditor?.apply()
     }
 }
