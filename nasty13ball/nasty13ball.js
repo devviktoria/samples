@@ -29,46 +29,167 @@ function generateAnswer() {
 }
 
 //--------------------------------------------------------
+class ThirteenBall {
 
-var canvas, context, canvasWidth, canvasHeight;
-let answerArea;
-let isBallShowingNumber = true;
+    constructor(context, canvas) {
+        this.context = context;
+        this.canvas = canvas;
 
+        this.isBallShowingNumber = true;
+        this.defaultText = "13";
+        this.defaultFont = "bold 50px 'Times New Roman', Times, serif";
+        this.defaultStyle = [0, 0, 0];
+
+        this.answer = "";
+        this.answerFont = "bold 10px 'Times New Roman', Times, serif"
+        this.answerStyle = [70, 130, 180];
+        this.answerMeasurement = undefined;
+
+        this.textAlpha = 1.0;
+        this.offsetX = 0.0;
+        this.textRadius = 40;
+    }
+
+    getStyleString(styleArray) {
+        return "rgba(" + styleArray.join() + "," + this.textAlpha + ")";
+    }
+
+    applyTranformations() {
+        context.translate(150, 150);
+        context.scale(1.5, 1.5);
+    }
+
+    drawBackgroundBall() {
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        context.save();
+
+        this.applyTranformations();
+
+        context.beginPath();
+        context.fillStyle = "#FFFFF8"
+        context.arc(0, 0, 100, 0, 2 * Math.PI, false);
+        context.fill();
+
+        context.beginPath();
+        context.fillStyle = "coral"
+        context.arc(0, 0, 100, -Math.PI / 6, Math.PI / 6, false);
+        context.arc(0, 0, 100, 5 * Math.PI / 6, 7 * Math.PI / 6, false);
+        context.fill();
+        context.restore();
+    }
+
+    drawTextBackGround() {
+
+        context.save();
+
+        this.applyTranformations();
+
+        context.beginPath();
+        context.fillStyle = "#FFFFF8"
+        context.arc(this.offsetX, 0, this.textRadius, -Math.PI / 2, Math.PI / 2, false);
+        context.arc(-this.offsetX, 0, this.textRadius, Math.PI / 2, 3 * Math.PI / 2, false);
+        context.fill();
+        context.restore();
+    }
+
+    drawText(text, font, fillStyle, textMeasurement) {
+        context.save();
+
+        this.applyTranformations();
+
+        context.beginPath();
+        context.font = font;
+        context.fillStyle = fillStyle;
+        let textYPosition = (textMeasurement.actualBoundingBoxAscent + textMeasurement.actualBoundingBoxDescent) / 2;
+        context.fillText(text, -textMeasurement.width / 2, textYPosition);
+        context.restore();
+    }
+
+    measureText(text, font, fillStyle) {
+        context.save();
+        context.font = font;
+        context.fillStyle = fillStyle;
+        let textMeasurement = context.measureText(text);
+        context.restore();
+
+        return textMeasurement;
+    }
+
+    draw13Ball() {
+        let currentText = this.isBallShowingNumber ? this.defaultText : this.answer;
+        let currentFont = this.isBallShowingNumber ? this.defaultFont : this.answerFont;
+        let currentStyle = this.isBallShowingNumber ? this.defaultStyle : this.answerStyle;
+        let textMeasurement = this.measureText(currentText, currentFont, currentStyle);
+        this.drawBackgroundBall();
+        this.drawTextBackGround();
+        this.drawText(currentText, currentFont, this.getStyleString(currentStyle), textMeasurement);
+    }
+
+    changeTextAlpha(value) {
+        this.textAlpha += value;
+        if (this.textAlpha < 0.0) {
+            this.textAlpha = 0.0;
+        }
+        if (this.textAlpha > 1.0) {
+            this.textAlpha = 1.0;
+        }
+    }
+
+    hideCurrentText() {
+        let maxTextBackGroundOffsetX = 0;
+        if (this.answerMeasurement !== undefined) {
+            maxTextBackGroundOffsetX = Math.max(Math.floor(this.answerMeasurement.width / 2 - this.textRadius / 2), 0);
+        }
+
+        if (maxTextBackGroundOffsetX > this.offsetX) {
+            this.offsetX += 1;
+            if (this.offsetX > maxTextBackGroundOffsetX) {
+                this.offsetX = maxTextBackGroundOffsetX;
+            }
+        } else if (maxTextBackGroundOffsetX < this.offsetX) {
+            this.offsetX -= 1;
+            if (this.offsetX < 0) {
+                this.offsetX = 0;
+            }
+        }
+
+        this.changeTextAlpha(-0.05);
+        this.draw13Ball();
+    }
+
+    showCurrentText() {
+        let alphaDelta = this.isBallShowingNumber ? 0.1 : 0.05;
+        this.changeTextAlpha(alphaDelta);
+        this.draw13Ball();
+    }
+
+    setAnswer(answer) {
+        this.answer = answer;
+        this.answerMeasurement = this.measureText(this.answer, this.answerFont, this.answerStyle);
+    }
+
+    flipBall() {
+        this.isBallShowingNumber = !this.isBallShowingNumber;
+    }
+}
+
+//----------------------------------------------------------------
+
+var canvas, context;
+let thirteenBall;
+let ballFacingUp = true;
+let interval;
 
 window.onload = function init() {
     canvas = document.querySelector("#gameCanvas");
-    answerArea = document.querySelector("#answerArea");
-
     canvas.onclick = ballFlip;
 
-    canvasWidth = canvas.width;
-    canvasHeight = canvas.height;
     context = canvas.getContext('2d');
+    thirteenBall = new ThirteenBall(context, canvas);
 
-    draw13Ball(isBallShowingNumber, "");
+    thirteenBall.draw13Ball();
+
 };
-
-function ballFlip(event) {
-    if (!clickedOnBall(event)) {
-        answerArea.innerHTML = "";
-        return;
-    }
-
-    isBallShowingNumber = !isBallShowingNumber;
-
-    if (isBallShowingNumber) {
-        answerArea.innerHTML = "";
-        draw13Ball(isBallShowingNumber, "");
-    } else {
-        answerQuestion(event);
-    }
-}
-
-function answerQuestion(event) {
-    let answer = generateAnswer();
-    answerArea.innerHTML = answer;
-    draw13Ball(isBallShowingNumber, answer);
-}
 
 function clickedOnBall(event) {
     let canvasClientRect = canvas.getBoundingClientRect();
@@ -82,46 +203,47 @@ function clickedOnBall(event) {
     return false;
 }
 
-function draw13Ball(isBallShowingNumber, text) {
-
-    context.clearRect(0, 0, canvas.width, canvas.height);
-    context.save();
-
-    context.translate(150, 150);
-    context.scale(1.5, 1.5);
-    context.beginPath();
-    context.fillStyle = "#FFFFF8"
-    context.arc(0, 0, 100, 0, 2 * Math.PI, false);
-    context.fill();
-
-    context.beginPath();
-    context.fillStyle = "coral"
-    context.arc(0, 0, 100, -Math.PI / 6, Math.PI / 6, false);
-    context.arc(0, 0, 100, 5 * Math.PI / 6, 7 * Math.PI / 6, false);
-    context.fill();
-
-
-
-    if (isBallShowingNumber) {
-        context.beginPath();
-        context.fillStyle = "#FFFFF8"
-        context.arc(0, 0, 40, 0, 2 * Math.PI, false);
-        context.fill();
-
-        context.beginPath();
-        context.font = "bold 50px  'Times New Roman', Times, serif";
-        context.fillStyle = "black"
-        let textMeasurement = context.measureText("13");
-        let textYPosition = (textMeasurement.actualBoundingBoxAscent + textMeasurement.actualBoundingBoxDescent) / 2;
-        context.fillText("13", -textMeasurement.width / 2, textYPosition);
+function showCurrentTextOnBall() {
+    if (thirteenBall.textAlpha >= 1.0) {
+        console.log("showCurrentTextOnBall - clearInterval();");
+        clearInterval(interval);
     } else {
-        context.beginPath();
-        context.font = "bold 10px  'Times New Roman', Times, serif";
-        context.fillStyle = "black"
-        let textMeasurement = context.measureText(text);
-        let textYPosition = (textMeasurement.actualBoundingBoxAscent + textMeasurement.actualBoundingBoxDescent) / 2;
-        context.fillText(text, -textMeasurement.width / 2, textYPosition);
+        console.log("thirteenBall.hideCurrentText();");
+        thirteenBall.showCurrentText();
+    }
+}
+
+function hideCurrentTextOnBall() {
+    if (thirteenBall.textAlpha <= 0.0) {
+        console.log("hideCurrentTextOnBall() - clearInterval();");
+        clearInterval(interval);
+        console.log("thirteenBall.flipBall()");
+        thirteenBall.flipBall();
+        interval = setInterval(showCurrentTextOnBall, 50);
+    } else {
+        console.log("thirteenBall.hideCurrentText();");
+        thirteenBall.hideCurrentText();
+    }
+}
+
+function setAnswerOnBall() {
+    let answer = generateAnswer();
+    thirteenBall.setAnswer(answer);
+}
+
+function ballFlip(event) {
+    if (!clickedOnBall(event)) {
+        return;
     }
 
-    context.restore();
+    ballFacingUp = !ballFacingUp;
+
+    if (ballFacingUp) {
+        thirteenBall.setAnswer("");
+        interval = setInterval(hideCurrentTextOnBall, 50);
+    } else {
+        setAnswerOnBall();
+        console.log("setInterval(hideCurrentTextOnBall, 50);");
+        interval = setInterval(hideCurrentTextOnBall, 50);
+    }
 }
