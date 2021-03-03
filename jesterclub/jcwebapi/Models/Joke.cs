@@ -35,5 +35,11 @@ namespace jcwebapi.Models {
 
         [BsonElement (elementName: "responses")]
         public List<Response> Responses { get; set; }
+
+        [BsonElement (elementName: "responsesum")]
+        public int ResponseSum { get; set; }
+
+        [BsonElement (elementName: "responsestats")]
+        public List<ResponseStatistic> ResponseStatistics { get; set; }
     }
 }

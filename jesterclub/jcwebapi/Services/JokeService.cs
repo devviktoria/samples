@@ -1,9 +1,7 @@
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using jcwebapi.Models;
 using jcwebapi.Repository;
-using MongoDB.Bson.Serialization.Conventions;
 using MongoDB.Driver;
 
 namespace jcwebapi.Services {
@@ -11,9 +9,6 @@ namespace jcwebapi.Services {
         private readonly IMongoCollection<Joke> _jokeCollection;
 
         public JokeService (IMongoClient mongoClient) {
-            // var camelCaseConvention = new ConventionPack { new CamelCaseElementNameConvention () };
-            // ConventionRegistry.Register ("CamelCase", camelCaseConvention, type => true);
-
             _jokeCollection = mongoClient.GetDatabase (MongoDbDatabase.DbName).GetCollection<Joke> ("joke");
         }
         public async Task<Joke> Get (string id) =>
@@ -27,6 +22,13 @@ namespace jcwebapi.Services {
             joke.Responses = new List<Response> ();
             foreach (string emotion in Response.Emotions) {
                 joke.Responses.Add (new Response () { Emotion = emotion, Counter = 0 });
+            }
+
+            joke.ResponseSum = 0;
+
+            joke.ResponseStatistics = new List<ResponseStatistic> ();
+            for (int day = 1; day <= 7; day++) {
+                joke.ResponseStatistics.Add (new ResponseStatistic () { Day = day, Counter = 0 });
             }
 
             await _jokeCollection.InsertOneAsync (joke);
