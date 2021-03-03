@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using jcwebapi.Models;
 using jcwebapi.Services;
@@ -26,13 +27,13 @@ namespace jcwebapi.Controllers {
         }
 
         [HttpGet (nameof (GetLatestJokes), Name = nameof (GetLatestJokes))]
-        public async Task<ActionResult<IReadOnlyList<Joke>> > GetLatestJokes () {
-            return Ok (await _jokeService.GetLatestJokes ());
+        public async Task<ActionResult<IReadOnlyList<Joke>> > GetLatestJokes (CancellationToken cancellationToken) {
+            return Ok (await _jokeService.GetLatestJokes (cancellationToken));
         }
 
         [HttpGet (nameof (GetMostPopularJokes), Name = nameof (GetMostPopularJokes))]
-        public async Task<ActionResult<IReadOnlyList<Joke>> > GetMostPopularJokes () {
-            return Ok (await _jokeService.GetMostPopularJokes ());
+        public async Task<ActionResult<IReadOnlyList<Joke>> > GetMostPopularJokes (CancellationToken cancellationToken) {
+            return Ok (await _jokeService.GetMostPopularJokes (cancellationToken));
         }
 
         [HttpPost]

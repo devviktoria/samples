@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using jcwebapi.Models;
 using jcwebapi.Repository;
@@ -17,7 +18,7 @@ namespace jcwebapi.Services {
         public async Task<Joke> Get (string id) =>
             await _jokeCollection.Find<Joke> (joke => joke.Id == id).FirstOrDefaultAsync ();
 
-        public async Task<IReadOnlyList<Joke>> GetLatestJokes () {
+        public async Task<IReadOnlyList<Joke>> GetLatestJokes (CancellationToken cancellationToken) {
             return await _jokeCollection
                 .Find (_ => true)
                 .SortByDescending (j => j.CreationDate)
@@ -25,7 +26,7 @@ namespace jcwebapi.Services {
                 .ToListAsync ();
         }
 
-        public async Task<IReadOnlyList<Joke>> GetMostPopularJokes () {
+        public async Task<IReadOnlyList<Joke>> GetMostPopularJokes (CancellationToken cancellationToken) {
             return await _jokeCollection
                 .Find (_ => true)
                 .SortByDescending (j => j.ResponseSum)
