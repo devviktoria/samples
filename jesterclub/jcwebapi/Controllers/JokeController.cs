@@ -25,6 +25,16 @@ namespace jcwebapi.Controllers {
             return joke;
         }
 
+        [HttpGet (nameof (GetLatestJokes), Name = nameof (GetLatestJokes))]
+        public async Task<ActionResult<IReadOnlyList<Joke>> > GetLatestJokes () {
+            return Ok (await _jokeService.GetLatestJokes ());
+        }
+
+        [HttpGet (nameof (GetMostPopularJokes), Name = nameof (GetMostPopularJokes))]
+        public async Task<ActionResult<IReadOnlyList<Joke>> > GetMostPopularJokes () {
+            return Ok (await _jokeService.GetMostPopularJokes ());
+        }
+
         [HttpPost]
         public async Task<ActionResult<Joke>> Create (Joke joke) {
             await _jokeService.Create (joke);

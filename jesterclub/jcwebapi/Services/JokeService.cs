@@ -6,6 +6,9 @@ using MongoDB.Driver;
 
 namespace jcwebapi.Services {
     public class JokeService {
+        private const int LatestJokeCount = 10;
+        private const int MostPopularJokeCount = 10;
+
         private readonly IMongoCollection<Joke> _jokeCollection;
 
         public JokeService (IMongoClient mongoClient) {
@@ -13,6 +16,22 @@ namespace jcwebapi.Services {
         }
         public async Task<Joke> Get (string id) =>
             await _jokeCollection.Find<Joke> (joke => joke.Id == id).FirstOrDefaultAsync ();
+
+        public async Task<IReadOnlyList<Joke>> GetLatestJokes () {
+            return await _jokeCollection
+                .Find (_ => true)
+                .SortByDescending (j => j.CreationDate)
+                .Limit (LatestJokeCount)
+                .ToListAsync ();
+        }
+
+        public async Task<IReadOnlyList<Joke>> GetMostPopularJokes () {
+            return await _jokeCollection
+                .Find (_ => true)
+                .SortByDescending (j => j.ResponseSum)
+                .Limit (MostPopularJokeCount)
+                .ToListAsync ();
+        }
 
         public async Task<Joke> Create (Joke joke) {
             if (joke.Id != null) {
