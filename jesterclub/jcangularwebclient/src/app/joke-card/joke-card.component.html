@@ -1,0 +1,29 @@
+<div *ngIf="joke" class="jokecard">
+  <div class="joketext">{{ joke.Text }}</div>
+  <p class="jokeauthor">posted by: {{ joke.UserName }}</p>
+  <div>
+    <span *ngFor="let emotionCounter of joke.EmotionCounters">
+      <a [innerHTML]="getEmojiForEmotion(emotionCounter.Emotion)"> </a>
+      {{ emotionCounter.Counter }}
+    </span>
+    <svg
+      class="jokestats"
+      [attr.width]="(barChartColumnWidth + barChartSpacing) * 7"
+      [attr.height]="barChartHeight"
+    >
+      <rect
+        *ngFor="let responseStatistic of joke.ResponseStatistics; index as i"
+        style="fill: rgb(0, 0, 255)"
+        [attr.width]="barChartColumnWidth"
+        [attr.height]="
+          (responseStatistic.Counter * barChartHeight) / joke.ResponseSum
+        "
+        [attr.x]="i * (barChartColumnWidth + barChartSpacing)"
+        [attr.y]="
+          barChartHeight -
+          (responseStatistic.Counter * barChartHeight) / joke.ResponseSum
+        "
+      />
+    </svg>
+  </div>
+</div>

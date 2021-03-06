@@ -1,0 +1,23 @@
+.jokecard {
+  width: 400px;
+}
+
+.joketext {
+  border: 1px solid black;
+  padding: 10px;
+}
+
+.jokeauthor {
+  text-align: right;
+  font-style: italic;
+  font-size: smaller;
+  margin: 2px;
+}
+
+.jokestats {
+  float: right;
+}
+
+.emoji {
+  font-family: "Symbola";
+}
