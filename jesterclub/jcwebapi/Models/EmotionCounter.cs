@@ -1,7 +1,7 @@
 using MongoDB.Bson.Serialization.Attributes;
 
 namespace jcwebapi.Models {
-    public class Response {
+    public class EmotionCounter {
 
         public const string SleepyEmotion = "sleepy";
         public const string NoneEmotion = "none";

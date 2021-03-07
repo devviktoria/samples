@@ -33,8 +33,8 @@ namespace jcwebapi.Models {
         [BsonElement (elementName: "tags")]
         public List<string> Tags { get; set; }
 
-        [BsonElement (elementName: "responses")]
-        public List<Response> Responses { get; set; }
+        [BsonElement (elementName: "emotioncounters")]
+        public List<EmotionCounter> EmotionCounters { get; set; }
 
         [BsonElement (elementName: "responsesum")]
         public int ResponseSum { get; set; }

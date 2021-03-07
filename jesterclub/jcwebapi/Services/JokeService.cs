@@ -39,9 +39,9 @@ namespace jcwebapi.Services {
                 joke.Id = null;
             }
 
-            joke.Responses = new List<Response> ();
-            foreach (string emotion in Response.Emotions) {
-                joke.Responses.Add (new Response () { Emotion = emotion, Counter = 0 });
+            joke.EmotionCounters = new List<EmotionCounter> ();
+            foreach (string emotion in EmotionCounter.Emotions) {
+                joke.EmotionCounters.Add (new EmotionCounter () { Emotion = emotion, Counter = 0 });
             }
 
             joke.ResponseSum = 0;
