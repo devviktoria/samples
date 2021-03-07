@@ -10,6 +10,8 @@ import { Joke } from '../models/joke';
 })
 export class JokeService {
   private latestJokesUrl = 'http://localhost:5000/api/Joke/GetLatestJokes';
+  private mostPopularJokesUrl =
+    'http://localhost:5000/api/Joke/GetMostPopularJokes';
   httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
   };
@@ -20,6 +22,13 @@ export class JokeService {
     return this.http.get<Joke[]>(this.latestJokesUrl).pipe(
       tap((_) => true),
       catchError(this.handleError<Joke[]>('getLatestJokes', []))
+    );
+  }
+
+  getMostPopularJokes(): Observable<Joke[]> {
+    return this.http.get<Joke[]>(this.mostPopularJokesUrl).pipe(
+      tap((_) => true),
+      catchError(this.handleError<Joke[]>('getMostPopularJokesUrl', []))
     );
   }
 

@@ -1,0 +1,12 @@
+<div class="flexlayout">
+  <div class="menuColumn">
+    <p>Latest jokes</p>
+    <p>Most popular jokes</p>
+  </div>
+  <div class="column">
+    <app-joke-list [jokeListType]="'latest'"></app-joke-list>
+  </div>
+  <div class="column">
+    <app-joke-list [jokeListType]="'mostpopular'"></app-joke-list>
+  </div>
+</div>

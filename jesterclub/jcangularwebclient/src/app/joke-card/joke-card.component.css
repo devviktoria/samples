@@ -1,9 +1,10 @@
 .jokecard {
+  border: 1px solid black;
   width: 400px;
+  margin-bottom: 10px;
 }
 
 .joketext {
-  border: 1px solid black;
   padding: 10px;
 }
 
@@ -16,8 +17,4 @@
 
 .jokestats {
   float: right;
-}
-
-.emoji {
-  font-family: "Symbola";
 }
