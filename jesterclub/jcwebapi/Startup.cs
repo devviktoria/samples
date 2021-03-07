@@ -15,6 +15,8 @@ using Microsoft.OpenApi.Models;
 
 namespace jcwebapi {
     public class Startup {
+        readonly string JesterClubSpecificOrigins = "_JesterClubSpecificOrigins";
+
         public Startup (IConfiguration configuration) {
             Configuration = configuration;
         }
@@ -23,6 +25,16 @@ namespace jcwebapi {
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices (IServiceCollection services) {
+
+            services.AddCors (options => {
+                options.AddPolicy (name: JesterClubSpecificOrigins,
+                    builder => {
+                        builder.AllowAnyOrigin ()
+                            .AllowAnyMethod ()
+                            .AllowAnyHeader ();
+                    });
+            });
+
             MongoDbDatabase.RegisterMongoDbServices (services);
             services.AddControllers ().AddNewtonsoftJson (options => options.UseMemberCasing ());
             services.AddSwaggerGen (c => {
@@ -32,6 +44,7 @@ namespace jcwebapi {
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure (IApplicationBuilder app, IWebHostEnvironment env) {
+
             if (env.IsDevelopment ()) {
                 app.UseDeveloperExceptionPage ();
                 app.UseSwagger ();
@@ -41,6 +54,8 @@ namespace jcwebapi {
             //app.UseHttpsRedirection();
 
             app.UseRouting ();
+
+            app.UseCors (JesterClubSpecificOrigins);
 
             app.UseAuthorization ();
 

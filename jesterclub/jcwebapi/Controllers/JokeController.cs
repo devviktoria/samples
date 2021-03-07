@@ -3,9 +3,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using jcwebapi.Models;
 using jcwebapi.Services;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
 namespace jcwebapi.Controllers {
+
+    [EnableCors ("_JesterClubSpecificOrigins")]
     [Route ("api/[controller]")]
     [ApiController]
     public class JokeController : ControllerBase {
