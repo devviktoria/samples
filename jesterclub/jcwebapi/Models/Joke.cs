@@ -6,8 +6,9 @@ using Newtonsoft.Json;
 
 namespace jcwebapi.Models {
     public class Joke {
+
         [BsonElement ("_id")]
-        [JsonProperty ("_id")]
+        [JsonProperty ("Id")]
         [BsonId]
         [BsonRepresentation (BsonType.ObjectId)]
         public string Id { get; set; }

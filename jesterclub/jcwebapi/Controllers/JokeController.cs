@@ -63,7 +63,7 @@ namespace jcwebapi.Controllers {
         [HttpPut ("IncrementEmotionCounter/{id:length(24)}/{emotion}")]
         public async Task<ActionResult<Joke>> IncrementEmotionCounter (string id, string emotion) {
             if (!Array.Exists (EmotionCounter.Emotions, e => e == emotion)) {
-                return NotFound ();
+                return BadRequest ();
             }
 
             var joke = await _jokeService.Get (id);

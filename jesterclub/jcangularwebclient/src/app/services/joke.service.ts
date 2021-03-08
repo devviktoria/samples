@@ -12,6 +12,8 @@ export class JokeService {
   private latestJokesUrl = 'http://localhost:5000/api/Joke/GetLatestJokes';
   private mostPopularJokesUrl =
     'http://localhost:5000/api/Joke/GetMostPopularJokes';
+  private incrementEmotionCounterUrl =
+    'http://localhost:5000/api/Joke/IncrementEmotionCounter';
   httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
   };
@@ -19,16 +21,26 @@ export class JokeService {
   constructor(private http: HttpClient) {}
 
   getLatestJokes(): Observable<Joke[]> {
-    return this.http.get<Joke[]>(this.latestJokesUrl).pipe(
+    return this.http.get<Joke[]>(this.latestJokesUrl, this.httpOptions).pipe(
       tap((_) => true),
       catchError(this.handleError<Joke[]>('getLatestJokes', []))
     );
   }
 
   getMostPopularJokes(): Observable<Joke[]> {
-    return this.http.get<Joke[]>(this.mostPopularJokesUrl).pipe(
+    return this.http
+      .get<Joke[]>(this.mostPopularJokesUrl, this.httpOptions)
+      .pipe(
+        tap((_) => true),
+        catchError(this.handleError<Joke[]>('getMostPopularJokesUrl', []))
+      );
+  }
+
+  incrementEmotionCounter(jokeId: string, emotion: string): Observable<Joke> {
+    let url: string = `${this.incrementEmotionCounterUrl}/${jokeId}/${emotion}`;
+    return this.http.put<Joke>(url, null, this.httpOptions).pipe(
       tap((_) => true),
-      catchError(this.handleError<Joke[]>('getMostPopularJokesUrl', []))
+      catchError(this.handleError<Joke>('incrementEmotionCounter'))
     );
   }
 

@@ -18,3 +18,7 @@
 .jokestats {
   float: right;
 }
+
+a.emoji:hover {
+  cursor: pointer;
+}

@@ -3,7 +3,12 @@
   <p class="jokeauthor">posted by: {{ joke.UserName }}</p>
   <div>
     <span *ngFor="let emotionCounter of joke.EmotionCounters">
-      <a [innerHTML]="getEmojiForEmotion(emotionCounter.Emotion)"> </a>
+      <a
+        class="emoji"
+        [innerHTML]="getEmojiForEmotion(emotionCounter.Emotion)"
+        (click)="incrementEmotionCounter(emotionCounter.Emotion)"
+      >
+      </a>
       {{ emotionCounter.Counter }}
     </span>
     <svg
@@ -16,12 +21,12 @@
         style="fill: rgb(0, 0, 255)"
         [attr.width]="barChartColumnWidth"
         [attr.height]="
-          (responseStatistic.Counter * barChartHeight) / joke.ResponseSum
+          getResponsePercentage(responseStatistic) * barChartHeight
         "
         [attr.x]="i * (barChartColumnWidth + barChartSpacing)"
         [attr.y]="
           barChartHeight -
-          (responseStatistic.Counter * barChartHeight) / joke.ResponseSum
+          getResponsePercentage(responseStatistic) * barChartHeight
         "
       />
     </svg>

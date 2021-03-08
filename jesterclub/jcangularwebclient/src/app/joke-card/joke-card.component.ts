@@ -1,5 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Joke } from '../models/joke';
+import { ResponseStatistic } from '../models/responsestatistic';
+import { JokeService } from '../services/joke.service';
 
 @Component({
   selector: 'app-joke-card',
@@ -20,9 +22,9 @@ export class JokeCardComponent implements OnInit {
   barChartColumnWidth: number = 8;
   barChartSpacing: number = 5;
 
-  @Input() joke?: Joke;
+  @Input() joke!: Joke;
 
-  constructor() {}
+  constructor(private jokeService: JokeService) {}
 
   ngOnInit(): void {}
 
@@ -34,5 +36,19 @@ export class JokeCardComponent implements OnInit {
     }
 
     return emoji;
+  }
+
+  getResponsePercentage(responseStatistic: ResponseStatistic): number {
+    if (this.joke.ResponseSum < 1) {
+      return 0;
+    }
+
+    return responseStatistic.Counter / this.joke.ResponseSum;
+  }
+
+  incrementEmotionCounter(emotion: string) {
+    this.jokeService
+      .incrementEmotionCounter(this.joke.Id, emotion)
+      .subscribe((joke) => (this.joke = joke));
   }
 }
