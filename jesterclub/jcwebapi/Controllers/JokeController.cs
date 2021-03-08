@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -57,6 +58,23 @@ namespace jcwebapi.Controllers {
             await _jokeService.Update (id, jokeIn);
 
             return NoContent ();
+        }
+
+        [HttpPut ("IncrementEmotionCounter/{id:length(24)}/{emotion}")]
+        public async Task<ActionResult<Joke>> IncrementEmotionCounter (string id, string emotion) {
+            if (!Array.Exists (EmotionCounter.Emotions, e => e == emotion)) {
+                return NotFound ();
+            }
+
+            var joke = await _jokeService.Get (id);
+
+            if (joke == null) {
+                return NotFound ();
+            }
+
+            var updatedJoke = await _jokeService.IncrementEmotionCounter (id, emotion);
+
+            return updatedJoke;
         }
 
         [HttpDelete ("{id:length(24)}")]
