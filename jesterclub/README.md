@@ -1,6 +1,5 @@
 # Jester Club Web Site
-This is going to be a simple website about jokes.
-Currently I started working on the backend of the site, which is a Web API that uses a MongoDB database.
+This is going to be a small website where people can post jokes.
 
 ## Technical information
- Web API: It's written in C#. It uses the ASP.NET Core 5 Web API technology and the MongoDB's C# driver.
+It has a MongoDB database. The backend is a ASP.NET Core Web API, ehich uses the MongoDB's C# driver. The client side is in Angular. Please note that this project is in an early stage.
