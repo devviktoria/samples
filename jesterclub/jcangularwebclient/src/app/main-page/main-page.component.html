@@ -2,6 +2,14 @@
   <div class="menuColumn">
     <p>Latest jokes</p>
     <p>Most popular jokes</p>
+    <a
+      *ngIf="currentUser"
+      mat-flat-button
+      color="accent"
+      routerLink="/jokeupsert"
+    >
+      Add new joke
+    </a>
   </div>
   <div class="column">
     <app-joke-list [jokeListType]="'latest'"></app-joke-list>
