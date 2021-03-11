@@ -1,0 +1,13 @@
+.flexlayout {
+  display: flex;
+}
+
+.menuColumn {
+  flex: 100px;
+  padding: 10px;
+}
+
+.content {
+  flex: 100%;
+  padding: 10px;
+}

@@ -1,2 +1,18 @@
-<h1>Welcome to the Jester Club!</h1>
-<router-outlet></router-outlet>
+<h1>Welcome to the <a routerLink="">Jester Club</a>!</h1>
+<div class="flexlayout">
+  <div class="menuColumn">
+    <p>Latest jokes</p>
+    <p>Most popular jokes</p>
+    <a
+      *ngIf="currentUser"
+      mat-flat-button
+      color="accent"
+      routerLink="/jokeupsert"
+    >
+      Add new joke
+    </a>
+  </div>
+  <div class="content">
+    <router-outlet></router-outlet>
+  </div>
+</div>
