@@ -24,16 +24,18 @@ namespace jcwebapi.Services {
             await _jokeCollection.Find<Joke> (joke => joke.Id == id).FirstOrDefaultAsync ();
 
         public async Task<IReadOnlyList<Joke>> GetLatestJokes (CancellationToken cancellationToken) {
+            var releasedJokesFilter = Builders<Joke>.Filter.Ne (j => j.ReleasedDate, null);
             return await _jokeCollection
-                .Find (_ => true)
-                .SortByDescending (j => j.CreationDate)
+                .Find (releasedJokesFilter)
+                .SortByDescending (j => j.ReleasedDate)
                 .Limit (LatestJokeCount)
                 .ToListAsync ();
         }
 
         public async Task<IReadOnlyList<Joke>> GetMostPopularJokes (CancellationToken cancellationToken) {
+            var releasedJokesFilter = Builders<Joke>.Filter.Ne (j => j.ReleasedDate, null);
             return await _jokeCollection
-                .Find (_ => true)
+                .Find (releasedJokesFilter)
                 .SortByDescending (j => j.ResponseSum)
                 .Limit (MostPopularJokeCount)
                 .ToListAsync ();
@@ -43,6 +45,8 @@ namespace jcwebapi.Services {
             if (joke.Id != null) {
                 joke.Id = null;
             }
+
+            joke.ReleasedDate = null;
 
             joke.EmotionCounters = new List<EmotionCounter> ();
             foreach (string emotion in EmotionCounter.Emotions) {

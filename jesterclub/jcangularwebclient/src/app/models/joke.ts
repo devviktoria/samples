@@ -4,7 +4,7 @@ import { ResponseStatistic } from './responsestatistic';
 export interface Joke {
   Id: string;
 
-  UserId: string;
+  UserEmail: string;
 
   UserName: string;
 
@@ -15,6 +15,8 @@ export interface Joke {
   Copyright: string;
 
   CreationDate: Date;
+
+  ReleasedDate?: Date;
 
   Tags: Array<string>;
 

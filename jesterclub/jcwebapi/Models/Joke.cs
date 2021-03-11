@@ -13,8 +13,8 @@ namespace jcwebapi.Models {
         [BsonRepresentation (BsonType.ObjectId)]
         public string Id { get; set; }
 
-        [BsonElement (elementName: "userid")]
-        public string UserId { get; set; }
+        [BsonElement (elementName: "useremail")]
+        public string UserEmail { get; set; }
 
         [BsonElement (elementName: "username")]
         public string UserName { get; set; }
@@ -30,6 +30,9 @@ namespace jcwebapi.Models {
 
         [BsonElement (elementName: "creationdate")]
         public DateTime CreationDate { get; set; }
+
+        [BsonElement (elementName: "releaseddate")]
+        public DateTime? ReleasedDate { get; set; }
 
         [BsonElement (elementName: "tags")]
         public List<string> Tags { get; set; }
