@@ -39,16 +39,16 @@ export class JokeCardComponent implements OnInit {
   }
 
   getResponsePercentage(responseStatistic: ResponseStatistic): number {
-    if (this.joke.ResponseSum < 1) {
+    if ((this.joke?.ResponseSum as number) < 1) {
       return 0;
     }
 
-    return responseStatistic.Counter / this.joke.ResponseSum;
+    return responseStatistic.Counter / (this.joke?.ResponseSum as number);
   }
 
   incrementEmotionCounter(emotion: string) {
     this.jokeService
-      .incrementEmotionCounter(this.joke.Id, emotion)
+      .incrementEmotionCounter(this.joke?.Id as string, emotion)
       .subscribe((joke) => (this.joke = joke));
   }
 }

@@ -46,6 +46,7 @@ namespace jcwebapi.Services {
                 joke.Id = null;
             }
 
+            joke.CreationDate = DateTime.UtcNow;
             joke.ReleasedDate = null;
 
             joke.EmotionCounters = new List<EmotionCounter> ();

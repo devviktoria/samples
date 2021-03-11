@@ -2,7 +2,7 @@ import { EmotionCounter } from './emotioncounter';
 import { ResponseStatistic } from './responsestatistic';
 
 export interface Joke {
-  Id: string;
+  Id?: string;
 
   UserEmail: string;
 
@@ -14,15 +14,15 @@ export interface Joke {
 
   Copyright: string;
 
-  CreationDate: Date;
+  CreationDate?: Date;
 
   ReleasedDate?: Date;
 
   Tags: Array<string>;
 
-  EmotionCounters: Array<EmotionCounter>;
+  EmotionCounters?: Array<EmotionCounter>;
 
-  ResponseSum: number;
+  ResponseSum?: number;
 
-  ResponseStatistics: Array<ResponseStatistic>;
+  ResponseStatistics?: Array<ResponseStatistic>;
 }

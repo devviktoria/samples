@@ -9,6 +9,7 @@ import { Joke } from '../models/joke';
   providedIn: 'root',
 })
 export class JokeService {
+  private jokeUrl = 'http://localhost:5000/api/Joke';
   private latestJokesUrl = 'http://localhost:5000/api/Joke/GetLatestJokes';
   private mostPopularJokesUrl =
     'http://localhost:5000/api/Joke/GetMostPopularJokes';
@@ -41,6 +42,13 @@ export class JokeService {
     return this.http.put<Joke>(url, null, this.httpOptions).pipe(
       tap((_) => true),
       catchError(this.handleError<Joke>('incrementEmotionCounter'))
+    );
+  }
+
+  addJoke(joke: Joke): Observable<Joke> {
+    return this.http.post<Joke>(this.jokeUrl, joke, this.httpOptions).pipe(
+      tap((_) => true),
+      catchError(this.handleError<Joke>('addJoke'))
     );
   }
 

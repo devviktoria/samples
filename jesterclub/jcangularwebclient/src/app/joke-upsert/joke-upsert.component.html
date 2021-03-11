@@ -1,1 +1,18 @@
 <p>joke-upsert works!</p>
+<form [formGroup]="jokeForm" (ngSubmit)="onSubmit()">
+  <label>
+    Text:
+    <input type="text" formControlName="text" required />
+  </label>
+  <label>
+    Source:
+    <input type="text" formControlName="source" />
+  </label>
+  <label>
+    Copyright info:
+    <input type="text" formControlName="copyright" />
+  </label>
+  <button type="submit" [disabled]="!jokeForm.valid">Submit</button>
+</form>
+<p>Form Status: {{ jokeForm.status }}</p>
+<p>Value: {{ jokeForm.controls["text"].value }}</p>
