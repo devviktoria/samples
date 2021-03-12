@@ -52,6 +52,14 @@ export class JokeService {
     );
   }
 
+  updateJoke(joke: Joke): Observable<any> {
+    let url: string = `${this.jokeUrl}/${joke.Id}`;
+    return this.http.put<Joke>(url, joke, this.httpOptions).pipe(
+      tap((_) => true),
+      catchError(this.handleError<any>('updateJoke'))
+    );
+  }
+
   /**
    * Handle Http operation that failed.
    * Let the app continue.

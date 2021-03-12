@@ -78,6 +78,8 @@ export class JokeUpsertComponent implements OnInit {
         this.joke = joke;
         this.updateFormDataFromJoke();
       });
+    } else {
+      this.jokeService.updateJoke(this.joke).subscribe();
     }
     //this.router.navigateByUrl('/mainpage');
   }
