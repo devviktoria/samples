@@ -2,7 +2,7 @@ import { EmotionCounter } from './emotioncounter';
 import { ResponseStatistic } from './responsestatistic';
 
 export interface Joke {
-  Id?: string;
+  Id: string;
 
   UserEmail: string;
 

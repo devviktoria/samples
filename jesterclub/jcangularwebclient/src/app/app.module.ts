@@ -4,6 +4,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
 
 import { MatButtonModule } from '@angular/material/button';
+import { MatInputModule } from '@angular/material/input';
+import { MatCardModule } from '@angular/material/card';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -27,6 +29,8 @@ import { JokeUpsertComponent } from './joke-upsert/joke-upsert.component';
     HttpClientModule,
     ReactiveFormsModule,
     MatButtonModule,
+    MatInputModule,
+    MatCardModule,
     BrowserAnimationsModule,
   ],
   providers: [],

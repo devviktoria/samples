@@ -19,38 +19,98 @@ import { JokeService } from '../services/joke.service';
   styleUrls: ['./joke-upsert.component.css'],
 })
 export class JokeUpsertComponent implements OnInit {
+  joke: Joke = this.getEmptyJoke();
   currentUser?: User = undefined;
 
-  jokeForm = this.fb.group({
-    text: ['', Validators.required],
-    source: [''],
-    copyright: [''],
+  jokeForm = this.formBuilder.group({
+    id: [this.joke.Id],
+    text: [this.joke.Text, Validators.required],
+    source: [this.joke.Source],
+    copyright: [this.joke.Copyright],
   });
 
   constructor(
-    private fb: FormBuilder,
+    private formBuilder: FormBuilder,
     private tempauthService: TempauthService,
     private jokeService: JokeService,
     private router: Router
   ) {}
 
-  ngOnInit(): void {
-    this.tempauthService
-      .getLoggedUser()
-      .subscribe((user) => (this.currentUser = user));
+  public get FormTitle(): string {
+    if (this.joke.Id.length === 0) {
+      return 'New joke';
+    }
+
+    return 'Modify joke';
   }
 
-  onSubmit() {
-    let joke: Joke = {
-      UserEmail: this.currentUser?.email as string,
-      UserName: this.currentUser?.name as string,
-      Text: this.jokeForm.controls['text'].value,
-      Source: this.jokeForm.controls['source'].value,
-      Copyright: this.jokeForm.controls['copyright'].value,
+  public get SaveTitle(): string {
+    if (this.joke.Id.length === 0) {
+      return 'Save as draft';
+    }
+
+    return 'Overwrite draft';
+  }
+
+  ngOnInit(): void {
+    this.tempauthService.getLoggedUser().subscribe((user) => {
+      this.currentUser = user;
+      this.joke.UserEmail = user.email;
+      this.joke.UserName = user.name;
+    });
+  }
+
+  onSubmit(event: Event) {
+    this.updateJokeFromFormData();
+
+    let submitEvent: CustomSubmitEvent = event as CustomSubmitEvent;
+    let submitterName: string = submitEvent.submitter.getAttribute(
+      'name'
+    ) as string;
+
+    if (submitterName === 'release') {
+      this.joke.ReleasedDate = new Date();
+    }
+
+    if (this.joke.Id.length === 0) {
+      this.joke.CreationDate = new Date();
+      this.jokeService.addJoke(this.joke).subscribe((joke) => {
+        this.joke = joke;
+        this.updateFormDataFromJoke();
+      });
+    }
+    //this.router.navigateByUrl('/mainpage');
+  }
+
+  getEmptyJoke(): Joke {
+    return {
+      Id: '',
+      UserEmail: '',
+      UserName: '',
+      Text: '',
+      Source: '',
+      Copyright: '',
       Tags: [],
     };
-
-    this.jokeService.addJoke(joke).subscribe();
-    this.router.navigateByUrl('/mainpage');
   }
+
+  updateJokeFromFormData() {
+    this.joke.Text = this.jokeForm.controls['text'].value;
+    this.joke.Source = this.jokeForm.controls['source'].value;
+    this.joke.Copyright = this.jokeForm.controls['copyright'].value;
+  }
+
+  updateFormDataFromJoke() {
+    this.jokeForm.setValue({
+      id: this.joke.Id,
+      text: this.joke.Text,
+      source: this.joke.Source,
+      copyright: this.joke.Copyright,
+    });
+    console.debug(this.joke.Id);
+  }
+}
+
+interface CustomSubmitEvent extends Event {
+  submitter: HTMLElement;
 }

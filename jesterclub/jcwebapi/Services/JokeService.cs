@@ -46,9 +46,6 @@ namespace jcwebapi.Services {
                 joke.Id = null;
             }
 
-            joke.CreationDate = DateTime.UtcNow;
-            joke.ReleasedDate = null;
-
             joke.EmotionCounters = new List<EmotionCounter> ();
             foreach (string emotion in EmotionCounter.Emotions) {
                 joke.EmotionCounters.Add (new EmotionCounter () { Emotion = emotion, Counter = 0 });

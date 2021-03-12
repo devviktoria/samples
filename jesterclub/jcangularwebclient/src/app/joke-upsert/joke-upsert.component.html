@@ -1,18 +1,51 @@
-<p>joke-upsert works!</p>
-<form [formGroup]="jokeForm" (ngSubmit)="onSubmit()">
-  <label>
-    Text:
-    <input type="text" formControlName="text" required />
-  </label>
-  <label>
-    Source:
-    <input type="text" formControlName="source" />
-  </label>
-  <label>
-    Copyright info:
-    <input type="text" formControlName="copyright" />
-  </label>
-  <button type="submit" [disabled]="!jokeForm.valid">Submit</button>
+<form [formGroup]="jokeForm" (ngSubmit)="onSubmit($event)">
+  <input type="hidden" formControlName="id" />
+  <mat-card class="formCard" fxLayout="row">
+    <mat-card-header>
+      <mat-card-title>{{ FormTitle }}</mat-card-title>
+    </mat-card-header>
+    <mat-form-field appearance="outline" [style.width.%]="100">
+      <mat-label>Text:</mat-label>
+      <textarea
+        matInput
+        formControlName="text"
+        required
+        [style.height.px]="200"
+      ></textarea>
+    </mat-form-field>
+    <mat-form-field appearance="outline" [style.width.%]="100">
+      <mat-label>Source:</mat-label>
+      <textarea matInput formControlName="source" fxFlex="50"></textarea>
+    </mat-form-field>
+    <mat-form-field appearance="outline" [style.width.%]="100">
+      <mat-label>Copyright info:</mat-label>
+      <input type="text" matInput formControlName="copyright" />
+    </mat-form-field>
+    <mat-card-actions>
+      <button
+        mat-flat-button
+        color="accent"
+        type="submit"
+        name="draft"
+        class="buttonmargin"
+        [disabled]="!!this.joke.ReleasedDate || !this.jokeForm.valid"
+      >
+        Save as draft
+      </button>
+      <button
+        mat-flat-button
+        color="primary"
+        type="submit"
+        name="release"
+        class="buttonmargin"
+        [disabled]="!!this.joke.ReleasedDate || !this.jokeForm.valid"
+      >
+        Release
+      </button>
+
+      <a mat-flat-button class="buttonmargin">Go to My Jokes</a>
+    </mat-card-actions>
+  </mat-card>
 </form>
 <p>Form Status: {{ jokeForm.status }}</p>
-<p>Value: {{ jokeForm.controls["text"].value }}</p>
+<p>Value: {{ !!this.joke.ReleasedDate }}</p>
