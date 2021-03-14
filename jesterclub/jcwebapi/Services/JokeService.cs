@@ -41,6 +41,24 @@ namespace jcwebapi.Services {
                 .ToListAsync ();
         }
 
+        public async Task<IReadOnlyList<Joke>> GetUserJokes (string mode, string userEmail, int jokesPerPage, int pageIndex, CancellationToken cancellationToken) {
+            FilterDefinition<Joke> modeJokesFilter;
+            if (mode.Equals ("draft", StringComparison.OrdinalIgnoreCase)) {
+                modeJokesFilter = Builders<Joke>.Filter.Eq (j => j.ReleasedDate, null);
+            } else {
+                modeJokesFilter = Builders<Joke>.Filter.Ne (j => j.ReleasedDate, null);
+            }
+            var emailFilter = Builders<Joke>.Filter.Eq (j => j.UserEmail, userEmail);
+            var jokesFilter = Builders<Joke>.Filter.And (modeJokesFilter, emailFilter);
+
+            return await _jokeCollection
+                .Find (jokesFilter)
+                .SortBy (j => j.CreationDate)
+                .Limit (jokesPerPage)
+                .Skip (pageIndex * jokesPerPage)
+                .ToListAsync ();
+        }
+
         public async Task<Joke> Create (Joke joke) {
             if (joke.Id != null) {
                 joke.Id = null;

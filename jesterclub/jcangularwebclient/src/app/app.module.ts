@@ -14,6 +14,7 @@ import { JokeListComponent } from './joke-list/joke-list.component';
 import { MainPageComponent } from './main-page/main-page.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { JokeUpsertComponent } from './joke-upsert/joke-upsert.component';
+import { JokeListUserComponent } from './joke-list-user/joke-list-user.component';
 
 @NgModule({
   declarations: [
@@ -22,6 +23,7 @@ import { JokeUpsertComponent } from './joke-upsert/joke-upsert.component';
     JokeListComponent,
     MainPageComponent,
     JokeUpsertComponent,
+    JokeListUserComponent,
   ],
   imports: [
     BrowserModule,

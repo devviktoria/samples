@@ -40,6 +40,11 @@ namespace jcwebapi.Controllers {
             return Ok (await _jokeService.GetMostPopularJokes (cancellationToken));
         }
 
+        [HttpGet ("GetUserJokes/{mode}/{userEmail}/{jokesPerPage}/{pageIndex}", Name = "GetUserJokes")]
+        public async Task<ActionResult<IReadOnlyList<Joke>> > GetUserJokes (string mode, string userEmail, int jokesPerPage, int pageIndex, CancellationToken cancellationToken) {
+            return Ok (await _jokeService.GetUserJokes (mode, userEmail, jokesPerPage, pageIndex, cancellationToken));
+        }
+
         [HttpPost]
         public async Task<ActionResult<Joke>> Create (Joke joke) {
             await _jokeService.Create (joke);

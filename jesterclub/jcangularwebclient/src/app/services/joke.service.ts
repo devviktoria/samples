@@ -9,12 +9,13 @@ import { Joke } from '../models/joke';
   providedIn: 'root',
 })
 export class JokeService {
-  private jokeUrl = 'http://localhost:5000/api/Joke';
-  private latestJokesUrl = 'http://localhost:5000/api/Joke/GetLatestJokes';
-  private mostPopularJokesUrl =
-    'http://localhost:5000/api/Joke/GetMostPopularJokes';
+  private jokeBaseUrl = 'http://localhost:5000/api/Joke';
+  private latestJokesUrl = this.jokeBaseUrl + '/GetLatestJokes';
+  private mostPopularJokesUrl = this.jokeBaseUrl + '/GetMostPopularJokes';
   private incrementEmotionCounterUrl =
-    'http://localhost:5000/api/Joke/IncrementEmotionCounter';
+    this.jokeBaseUrl + '/IncrementEmotionCounter';
+  private userJokeUrl = this.jokeBaseUrl + '/GetUserJokes';
+
   httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
   };
@@ -37,6 +38,19 @@ export class JokeService {
       );
   }
 
+  getUserJokes(
+    mode: string,
+    userEmail: string,
+    jokesPerPage: number,
+    pageIndex: number
+  ): Observable<Joke[]> {
+    let url: string = `${this.userJokeUrl}/${mode}/${userEmail}/${jokesPerPage}/${pageIndex}`;
+    return this.http.get<Joke[]>(url, this.httpOptions).pipe(
+      tap((_) => true),
+      catchError(this.handleError<Joke[]>('getUserJokes', []))
+    );
+  }
+
   incrementEmotionCounter(jokeId: string, emotion: string): Observable<Joke> {
     let url: string = `${this.incrementEmotionCounterUrl}/${jokeId}/${emotion}`;
     return this.http.put<Joke>(url, null, this.httpOptions).pipe(
@@ -46,14 +60,14 @@ export class JokeService {
   }
 
   addJoke(joke: Joke): Observable<Joke> {
-    return this.http.post<Joke>(this.jokeUrl, joke, this.httpOptions).pipe(
+    return this.http.post<Joke>(this.jokeBaseUrl, joke, this.httpOptions).pipe(
       tap((_) => true),
       catchError(this.handleError<Joke>('addJoke'))
     );
   }
 
   updateJoke(joke: Joke): Observable<any> {
-    let url: string = `${this.jokeUrl}/${joke.Id}`;
+    let url: string = `${this.jokeBaseUrl}/${joke.Id}`;
     return this.http.put<Joke>(url, joke, this.httpOptions).pipe(
       tap((_) => true),
       catchError(this.handleError<any>('updateJoke'))
