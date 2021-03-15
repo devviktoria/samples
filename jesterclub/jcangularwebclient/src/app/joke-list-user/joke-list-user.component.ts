@@ -28,6 +28,14 @@ export class JokeListUserComponent implements OnInit {
     this.route.data.subscribe((p) => (this.mode = p.mode));
   }
 
+  public get PageTitle(): string {
+    if (this.mode === 'released') {
+      return 'My Released Jokes';
+    }
+
+    return 'My Draft Jokes';
+  }
+
   ngOnInit(): void {
     this.tempauthService.getLoggedUser().subscribe((user) => {
       this.user = user;

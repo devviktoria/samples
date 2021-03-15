@@ -1,0 +1,16 @@
+.jokecard {
+  border: 1px solid black;
+  width: 400px;
+  margin-bottom: 10px;
+  display: flex;
+}
+
+.column {
+  flex: 40%;
+  padding: 10px;
+}
+
+.buttonColumn {
+  flex: 30%;
+  padding: 10px;
+}

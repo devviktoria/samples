@@ -1,2 +1,4 @@
-<p>joke-list-user works! Mode: {{ mode }}</p>
-<div *ngFor="let joke of jokes">{{ joke.Text }}; {{ joke.CreationDate }}</div>
+<h2>{{ PageTitle }}</h2>
+<ng-template ngFor let-currentJoke [ngForOf]="jokes">
+  <app-joke-card-user [joke]="currentJoke"></app-joke-card-user>
+</ng-template>

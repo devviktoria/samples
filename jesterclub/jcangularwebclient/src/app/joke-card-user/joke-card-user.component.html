@@ -1,0 +1,25 @@
+<div *ngIf="joke" class="jokecard">
+  <div class="column">
+    <p>Creation time: {{ joke.CreationDate }}</p>
+    <p>{{ joke.Text }}</p>
+  </div>
+  <div class="column">
+    <p>I heard this from:</p>
+    <p>{{ joke.Source }}</p>
+    <p>Copyrighted by:</p>
+    <p>{{ joke.Copyright }}</p>
+  </div>
+  <div class="buttonColumn">
+    <ng-template [ngIf]="!joke.ReleasedDate">
+      <p>
+        <a mat-flat-button color="accent" routerLink="/jokeupsert/{{ joke.Id }}"
+          >Edit</a
+        >
+      </p>
+      <p>
+        <a mat-flat-button color="accent" routerLink="/mydrafjokes">Release</a>
+      </p>
+    </ng-template>
+    <p><a mat-flat-button color="warn" routerLink="/mydrafjokes">Delete</a></p>
+  </div>
+</div>

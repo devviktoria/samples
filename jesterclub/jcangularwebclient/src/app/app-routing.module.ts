@@ -7,7 +7,7 @@ import { JokeListUserComponent } from './joke-list-user/joke-list-user.component
 const routes: Routes = [
   { path: '', redirectTo: '/mainpage', pathMatch: 'full' },
   { path: 'mainpage', component: MainPageComponent },
-  { path: 'jokeupsert', component: JokeUpsertComponent },
+  { path: 'jokeupsert/:id', component: JokeUpsertComponent },
   {
     path: 'mydrafjokes',
     component: JokeListUserComponent,

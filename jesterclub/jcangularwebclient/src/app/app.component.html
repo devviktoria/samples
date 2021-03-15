@@ -3,30 +3,36 @@
   <div class="menuColumn">
     <p>Latest jokes</p>
     <p>Most popular jokes</p>
-    <a
-      *ngIf="currentUser"
-      mat-flat-button
-      color="accent"
-      routerLink="/mydrafjokes"
-    >
-      My Draft Jokes
-    </a>
-    <a
-      *ngIf="currentUser"
-      mat-flat-button
-      color="accent"
-      routerLink="/myreleasedjokes"
-    >
-      My Released Jokes
-    </a>
-    <a
-      *ngIf="currentUser"
-      mat-flat-button
-      color="accent"
-      routerLink="/jokeupsert"
-    >
-      Add new joke
-    </a>
+    <p>
+      <a
+        *ngIf="currentUser"
+        mat-stroked-button
+        color="accent"
+        routerLink="/mydrafjokes"
+      >
+        My Draft Jokes
+      </a>
+    </p>
+    <p>
+      <a
+        *ngIf="currentUser"
+        mat-stroked-button
+        color="accent"
+        routerLink="/myreleasedjokes"
+      >
+        My Released Jokes
+      </a>
+    </p>
+    <p>
+      <a
+        *ngIf="currentUser"
+        mat-stroked-button
+        color="accent"
+        routerLink="/jokeupsert/_"
+      >
+        Add new joke
+      </a>
+    </p>
   </div>
   <div class="content">
     <router-outlet></router-outlet>
