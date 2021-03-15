@@ -17,9 +17,9 @@
         >
       </p>
       <p>
-        <a mat-flat-button color="accent" routerLink="/mydrafjokes">Release</a>
+        <a mat-flat-button color="accent" (click)="releaseJoke()">Release</a>
       </p>
     </ng-template>
-    <p><a mat-flat-button color="warn" routerLink="/mydrafjokes">Delete</a></p>
+    <p><a mat-flat-button color="warn" (click)="deleteJoke()">Delete</a></p>
   </div>
 </div>

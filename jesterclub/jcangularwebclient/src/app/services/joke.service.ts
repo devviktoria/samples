@@ -82,6 +82,14 @@ export class JokeService {
     );
   }
 
+  deleteJoke(jokeId: string): Observable<any> {
+    let url: string = `${this.jokeBaseUrl}/${jokeId}`;
+    return this.http.delete(url, this.httpOptions).pipe(
+      tap((_) => true),
+      catchError(this.handleError<any>('deleteJoke'))
+    );
+  }
+
   /**
    * Handle Http operation that failed.
    * Let the app continue.

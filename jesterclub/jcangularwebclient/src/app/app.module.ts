@@ -6,6 +6,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatCardModule } from '@angular/material/card';
+import { MatDialogModule } from '@angular/material/dialog';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -16,6 +17,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { JokeUpsertComponent } from './joke-upsert/joke-upsert.component';
 import { JokeListUserComponent } from './joke-list-user/joke-list-user.component';
 import { JokeCardUserComponent } from './joke-card-user/joke-card-user.component';
+import { JokeDeleteConfirmationComponent } from './dialogs/joke-delete-confirmation/joke-delete-confirmation.component';
 
 @NgModule({
   declarations: [
@@ -26,6 +28,7 @@ import { JokeCardUserComponent } from './joke-card-user/joke-card-user.component
     JokeUpsertComponent,
     JokeListUserComponent,
     JokeCardUserComponent,
+    JokeDeleteConfirmationComponent,
   ],
   imports: [
     BrowserModule,
@@ -35,6 +38,7 @@ import { JokeCardUserComponent } from './joke-card-user/joke-card-user.component
     MatButtonModule,
     MatInputModule,
     MatCardModule,
+    MatDialogModule,
     BrowserAnimationsModule,
   ],
   providers: [],
