@@ -9,7 +9,7 @@ const routes: Routes = [
   { path: 'mainpage', component: MainPageComponent },
   { path: 'jokeupsert/:id', component: JokeUpsertComponent },
   {
-    path: 'mydrafjokes',
+    path: 'mydraftjokes',
     component: JokeListUserComponent,
     data: { mode: 'draft' },
   },

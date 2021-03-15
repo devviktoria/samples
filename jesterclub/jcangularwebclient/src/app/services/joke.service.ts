@@ -22,6 +22,14 @@ export class JokeService {
 
   constructor(private http: HttpClient) {}
 
+  getJoke(jokeId: string): Observable<Joke> {
+    let url: string = `${this.jokeBaseUrl}/${jokeId}`;
+    return this.http.get<Joke>(url, this.httpOptions).pipe(
+      tap((_) => true),
+      catchError(this.handleError<Joke>('getJoke'))
+    );
+  }
+
   getLatestJokes(): Observable<Joke[]> {
     return this.http.get<Joke[]>(this.latestJokesUrl, this.httpOptions).pipe(
       tap((_) => true),

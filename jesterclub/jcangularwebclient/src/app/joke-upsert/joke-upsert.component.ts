@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import {
   FormBuilder,
@@ -33,6 +33,7 @@ export class JokeUpsertComponent implements OnInit {
     private formBuilder: FormBuilder,
     private tempauthService: TempauthService,
     private jokeService: JokeService,
+    private route: ActivatedRoute,
     private router: Router
   ) {}
 
@@ -53,11 +54,19 @@ export class JokeUpsertComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.tempauthService.getLoggedUser().subscribe((user) => {
-      this.currentUser = user;
-      this.joke.UserEmail = user.email;
-      this.joke.UserName = user.name;
-    });
+    const id = this.route.snapshot.paramMap.get('id');
+    if (id?.length === 24) {
+      this.jokeService.getJoke(id).subscribe((joke) => {
+        this.joke = joke;
+        this.updateFormDataFromJoke();
+      });
+    } else {
+      this.tempauthService.getLoggedUser().subscribe((user) => {
+        this.currentUser = user;
+        this.joke.UserEmail = user.email;
+        this.joke.UserName = user.name;
+      });
+    }
   }
 
   onSubmit(event: Event) {
@@ -77,11 +86,13 @@ export class JokeUpsertComponent implements OnInit {
       this.jokeService.addJoke(this.joke).subscribe((joke) => {
         this.joke = joke;
         this.updateFormDataFromJoke();
+        this.navigateToReleasedJokes();
       });
     } else {
-      this.jokeService.updateJoke(this.joke).subscribe();
+      this.jokeService
+        .updateJoke(this.joke)
+        .subscribe((_) => this.navigateToReleasedJokes());
     }
-    //this.router.navigateByUrl('/mainpage');
   }
 
   getEmptyJoke(): Joke {
@@ -110,6 +121,12 @@ export class JokeUpsertComponent implements OnInit {
       copyright: this.joke.Copyright,
     });
     console.debug(this.joke.Id);
+  }
+
+  navigateToReleasedJokes() {
+    if (this.joke.ReleasedDate) {
+      this.router.navigateByUrl('/myreleasedjokes');
+    }
   }
 }
 

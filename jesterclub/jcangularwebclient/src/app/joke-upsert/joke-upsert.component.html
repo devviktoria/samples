@@ -43,9 +43,9 @@
         Release
       </button>
 
-      <a mat-flat-button class="buttonmargin">Go to My Jokes</a>
+      <a mat-stroked-button class="buttonmargin" routerLink="/mydraftjokes"
+        >Go to My Draft Jokes</a
+      >
     </mat-card-actions>
   </mat-card>
 </form>
-<p>Form Status: {{ jokeForm.status }}</p>
-<p>Value: {{ !!this.joke.ReleasedDate }}</p>
