@@ -16,27 +16,8 @@ namespace jcwebapi.Repository {
             DefineTagEntity (modelBuilder);
             DefineEmotionCounterEntity (modelBuilder);
             DefineResponseStatisticEntity (modelBuilder);
-            //DefineJokeTagConnectionEntitiy (modelBuilder);
 
             //Define Relationships
-            // modelBuilder.Entity (nameof (Joke) + nameof (Tag), e => {
-            //     e.HasOne (typeof (Tag), null)
-            //         .WithMany ()
-            //         .HasForeignKey (nameof (Tag.TagId))
-            //         .OnDelete (DeleteBehavior.Cascade)
-            //         .IsRequired ();
-
-            //     e.HasOne (typeof (Joke), null)
-            //         .WithMany ()
-            //         .HasForeignKey (nameof (Joke.JokeId))
-            //         .OnDelete (DeleteBehavior.Cascade)
-            //         .IsRequired ();
-            // });
-            // modelBuilder
-            //     .Entity<Joke> ()
-            //     .HasMany (j => j.Tags)
-            //     .WithMany (t => t.Jokes)
-            //     .UsingEntity (j => j.ToTable ((nameof (Joke) + nameof (Tag))));
             modelBuilder.Entity<Joke> ()
                 .HasMany (j => j.Tags)
                 .WithMany (t => t.Jokes)
@@ -203,23 +184,6 @@ namespace jcwebapi.Repository {
             modelBuilder.Entity<ResponseStatistic> ().HasKey (nameof (Joke.JokeId), nameof (ResponseStatistic.Day));
 
             modelBuilder.Entity<ResponseStatistic> ().ToTable (nameof (ResponseStatistic));
-        }
-
-        private void DefineJokeTagConnectionEntitiy (ModelBuilder modelBuilder) {
-            modelBuilder.Entity (nameof (Joke) + nameof (Tag), e => {
-                e.Property<int> (nameof (Joke.JokeId))
-                    .HasColumnType ("int")
-                    .IsRequired ();
-
-                e.Property<int> (nameof (Tag.TagId))
-                    .HasColumnType ("int")
-                    .IsRequired ();
-
-                e.HasKey (nameof (Joke.JokeId), nameof (Tag.TagId));
-
-                e.ToTable (nameof (Joke) + nameof (Tag));
-            });
-
         }
 
     }
