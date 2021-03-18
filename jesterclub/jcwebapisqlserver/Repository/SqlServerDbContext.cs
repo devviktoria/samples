@@ -7,6 +7,8 @@ using Microsoft.EntityFrameworkCore.Metadata;
 namespace jcwebapi.Repository {
     public class SqlServerDbContext : DbContext {
         public DbSet<Joke> Jokes { get; set; }
+        public DbSet<User> Users { get; set; }
+        public DbSet<Tag> Tags { get; set; }
 
         public SqlServerDbContext (DbContextOptions<SqlServerDbContext> options) : base (options) { }
 

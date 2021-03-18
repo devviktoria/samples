@@ -1,4 +1,5 @@
 using jcwebapi.Repository;
+using jcwebapi.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -21,7 +22,9 @@ namespace jcwebapisqlserver {
             services.AddDbContext<SqlServerDbContext> (options =>
                 options.UseSqlServer (dbConnectionString));
 
-            services.AddControllers ();
+            services.AddScoped<JokeService> ();
+
+            services.AddControllers ().AddNewtonsoftJson (options => options.UseMemberCasing ());;
             services.AddSwaggerGen (c => {
                 c.SwaggerDoc ("v1", new OpenApiInfo { Title = "jcwebapisqlserver", Version = "v1" });
             });

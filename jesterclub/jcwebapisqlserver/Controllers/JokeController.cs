@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using jcwebapi.Models;
+using jcwebapi.Models.Dtos;
 using jcwebapi.Services;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
 namespace jcwebapi.Controllers {
 
-    [EnableCors ("_JesterClubSpecificOrigins")]
+    //[EnableCors ("_JesterClubSpecificOrigins")]
     [Route ("api/[controller]")]
     [ApiController]
     public class JokeController : ControllerBase {
@@ -19,7 +20,7 @@ namespace jcwebapi.Controllers {
             _jokeService = jokeService;
         }
 
-        [HttpGet ("{id:length(24)}", Name = "GetJoke")]
+        [HttpGet ("{id}", Name = "GetJoke")]
         public async Task<ActionResult<Joke>> Get (string id) {
             var joke = await _jokeService.Get (id);
 
@@ -46,10 +47,10 @@ namespace jcwebapi.Controllers {
         }
 
         [HttpPost]
-        public async Task<ActionResult<Joke>> Create (Joke joke) {
-            await _jokeService.Create (joke);
+        public async Task<ActionResult<Joke>> Create (JokeDto joke) {
+            JokeDto insertedJoke = await _jokeService.Create (joke);
 
-            return CreatedAtRoute ("GetJoke", new { id = joke.JokeId.ToString () }, joke);
+            return CreatedAtRoute ("GetJoke", new { id = insertedJoke.ToString () }, insertedJoke);
         }
 
         [HttpPut ("{id:length(24)}")]

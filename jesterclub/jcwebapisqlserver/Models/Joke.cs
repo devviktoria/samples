@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace jcwebapi.Models {
     public class Joke {
 
-        public int JokeId { get; set; }
+        public int? JokeId { get; set; }
 
         public string JokeText { get; set; }
 

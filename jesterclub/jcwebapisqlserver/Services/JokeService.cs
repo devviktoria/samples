@@ -4,16 +4,18 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using jcwebapi.Models;
+using jcwebapi.Models.Dtos;
 using jcwebapi.Repository;
+using Microsoft.EntityFrameworkCore;
 
 namespace jcwebapi.Services {
     public class JokeService {
         private const int LatestJokeCount = 10;
         private const int MostPopularJokeCount = 10;
+        private SqlServerDbContext _sqlServerDbContext;
 
-        public JokeService () {
-            // _mongoClient = mongoClient;
-            // _jokeCollection = mongoClient.GetDatabase (MongoDbDatabase.DbName).GetCollection<Joke> ("joke");
+        public JokeService (SqlServerDbContext sqlServerDbContext) {
+            _sqlServerDbContext = sqlServerDbContext;
         }
 
         public async Task<Joke> Get (string id) => null;
@@ -58,26 +60,47 @@ namespace jcwebapi.Services {
             return null;
         }
 
-        public async Task<Joke> Create (Joke joke) {
-            // if (joke.Id != null) {
-            //     joke.Id = null;
-            // }
+        public async Task<JokeDto> Create (JokeDto jokeDto) {
+            Joke joke = new Joke {
+                JokeId = null,
+                JokeText = jokeDto.Text,
+                Source = jokeDto.Source,
+                Copyright = jokeDto.Copyright,
+                CreationDate = jokeDto.CreationDate,
+                ReleasedDate = jokeDto.ReleasedDate
+            };
 
-            // joke.EmotionCounters = new List<EmotionCounter> ();
-            // foreach (string emotion in EmotionCounter.Emotions) {
-            //     joke.EmotionCounters.Add (new EmotionCounter () { Emotion = emotion, Counter = 0 });
-            // }
+            User user = await _sqlServerDbContext.Users.SingleAsync<User> (u => u.UserEmail == jokeDto.UserEmail);
 
-            // joke.ResponseSum = 0;
+            if (user == null) {
+                throw new UserNotFoundException ($"The user with email: {jokeDto.UserEmail} does not exist in the database!");
+            }
 
-            // joke.ResponseStatistics = new List<ResponseStatistic> ();
-            // for (int day = 1; day <= 7; day++) {
-            //     joke.ResponseStatistics.Add (new ResponseStatistic () { Day = day, Counter = 0 });
-            // }
+            joke.User = user;
 
-            // await _jokeCollection.InsertOneAsync (joke);
-            // return joke;
-            return null;
+            List<Tag> existingTags = await _sqlServerDbContext.Tags.Where (t => jokeDto.Tags.Contains (t.Name)).ToListAsync ();
+
+            joke.Tags = existingTags;
+            foreach (string tag in jokeDto.Tags) {
+                if (!existingTags.Any (t => t.Name.Equals (tag, StringComparison.InvariantCultureIgnoreCase))) {
+                    joke.Tags.Add (new Tag { Name = tag.ToLowerInvariant () });
+                }
+            }
+
+            joke.EmotionCounters = new List<EmotionCounter> ();
+            foreach (string emotion in EmotionCounter.Emotions) {
+                joke.EmotionCounters.Add (new EmotionCounter () { Emotion = emotion, Counter = 0 });
+            }
+
+            joke.ResponseSum = 0;
+
+            joke.ResponseStatistics = new List<ResponseStatistic> ();
+            for (int day = 1; day <= 7; day++) {
+                joke.ResponseStatistics.Add (new ResponseStatistic () { Day = day, Counter = 0 });
+            }
+            _sqlServerDbContext.Jokes.Add (joke);
+            await _sqlServerDbContext.SaveChangesAsync ();
+            return (JokeDto) joke;
         }
 
         public async Task Update (string id, Joke jokeIn) { }
@@ -91,7 +114,7 @@ namespace jcwebapi.Services {
         public async Task Remove (Joke jokeIn) { }
         //await _jokeCollection.DeleteOneAsync (joke => joke.Id == jokeIn.Id);
 
-        public async Task Remove (int id) { }
+        public async Task Remove (int? id) { }
         //await _jokeCollection.DeleteOneAsync (joke => joke.Id == id);
     }
 }
