@@ -29,6 +29,10 @@ namespace jcwebapi.Models.Dtos {
         public List<ResponseStatistic> ResponseStatistics { get; set; }
 
         public static explicit operator JokeDto (Joke joke) {
+            if (joke == null) {
+                return null;
+            }
+
             JokeDto jokeDto = new JokeDto {
                 Id = joke.JokeId.ToString (),
                 UserEmail = joke.User.UserEmail,

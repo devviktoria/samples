@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 using jcwebapi.Models;
@@ -18,57 +19,67 @@ namespace jcwebapi.Services {
             _sqlServerDbContext = sqlServerDbContext;
         }
 
-        public async Task<Joke> Get (string id) => null;
-        // await _jokeCollection.Find<Joke> (joke => joke.Id == id).FirstOrDefaultAsync ();
+        public async Task<JokeDto> Get (string id) {
+            int sqlId;
+            if (!Int32.TryParse (id, out sqlId)) {
+                throw new InvalidJokeIdException ($"{id} is not a valid joke id.");
+            }
 
-        public async Task<IReadOnlyList<Joke>> GetLatestJokes (CancellationToken cancellationToken) {
-            // var releasedJokesFilter = Builders<Joke>.Filter.Ne (j => j.ReleasedDate, null);
-            // return await _jokeCollection
-            //     .Find (releasedJokesFilter)
-            //     .SortByDescending (j => j.ReleasedDate)
-            //     .Limit (LatestJokeCount)
-            //     .ToListAsync ();
-            return null;
+            return (JokeDto) (await _sqlServerDbContext.Jokes.SingleAsync (j => j.JokeId == sqlId));
         }
 
-        public async Task<IReadOnlyList<Joke>> GetMostPopularJokes (CancellationToken cancellationToken) {
-            //     var releasedJokesFilter = Builders<Joke>.Filter.Ne (j => j.ReleasedDate, null);
-            //     return await _jokeCollection
-            //         .Find (releasedJokesFilter)
-            //         .SortByDescending (j => j.ResponseSum)
-            //         .Limit (MostPopularJokeCount)
-            //         .ToListAsync ();
-            return null;
+        public async Task<IReadOnlyList<JokeDto>> GetLatestJokes (CancellationToken cancellationToken) {
+            return await _sqlServerDbContext.Jokes
+                .Where (j => j.ReleasedDate != null)
+                .OrderByDescending (j => j.ReleasedDate)
+                .Take (LatestJokeCount)
+                .Include (j => j.User)
+                .Include (j => j.Tags)
+                .Include (j => j.EmotionCounters)
+                .Include (j => j.ResponseStatistics)
+                .Select (j => (JokeDto) j)
+                .ToListAsync ();
         }
 
-        public async Task<IReadOnlyList<Joke>> GetUserJokes (string mode, string userEmail, int jokesPerPage, int pageIndex, CancellationToken cancellationToken) {
-            // FilterDefinition<Joke> modeJokesFilter;
-            // if (mode.Equals ("draft", StringComparison.OrdinalIgnoreCase)) {
-            //     modeJokesFilter = Builders<Joke>.Filter.Eq (j => j.ReleasedDate, null);
-            // } else {
-            //     modeJokesFilter = Builders<Joke>.Filter.Ne (j => j.ReleasedDate, null);
-            // }
-            // var emailFilter = Builders<Joke>.Filter.Eq (j => j.UserEmail, userEmail);
-            // var jokesFilter = Builders<Joke>.Filter.And (modeJokesFilter, emailFilter);
+        public async Task<IReadOnlyList<JokeDto>> GetMostPopularJokes (CancellationToken cancellationToken) {
+            return await _sqlServerDbContext.Jokes
+                .Where (j => j.ReleasedDate != null)
+                .OrderByDescending (j => j.ResponseSum)
+                .Take (MostPopularJokeCount)
+                .Include (j => j.User)
+                .Include (j => j.Tags)
+                .Include (j => j.EmotionCounters)
+                .Include (j => j.ResponseStatistics)
+                .Select (j => (JokeDto) j)
+                .ToListAsync ();
+        }
 
-            // return await _jokeCollection
-            //     .Find (jokesFilter)
-            //     .SortBy (j => j.CreationDate)
-            //     .Limit (jokesPerPage)
-            //     .Skip (pageIndex * jokesPerPage)
-            //     .ToListAsync ();
-            return null;
+        public async Task<IReadOnlyList<JokeDto>> GetUserJokes (string mode, string userEmail, int jokesPerPage, int pageIndex, CancellationToken cancellationToken) {
+            Expression<Func<Joke, bool>> modeJokesPredicate;
+
+            if (mode.Equals ("draft", StringComparison.OrdinalIgnoreCase)) {
+                modeJokesPredicate = (j => j.User.UserEmail == userEmail && j.ReleasedDate == null);
+            } else {
+                modeJokesPredicate = (j => j.User.UserEmail == userEmail && j.ReleasedDate != null);
+            }
+
+            return await _sqlServerDbContext.Jokes
+                .Where (modeJokesPredicate)
+                .OrderBy (j => j.CreationDate)
+                .Skip (pageIndex * jokesPerPage)
+                .Take (jokesPerPage)
+                .Include (j => j.User)
+                .Include (j => j.Tags)
+                .Include (j => j.EmotionCounters)
+                .Include (j => j.ResponseStatistics)
+                .Select (j => (JokeDto) j)
+                .ToListAsync ();
         }
 
         public async Task<JokeDto> Create (JokeDto jokeDto) {
-            Joke joke = new Joke {
-                JokeId = null,
-                JokeText = jokeDto.Text,
-                Source = jokeDto.Source,
-                Copyright = jokeDto.Copyright,
-                CreationDate = jokeDto.CreationDate,
-                ReleasedDate = jokeDto.ReleasedDate
-            };
+            Joke joke = new Joke ();
+            joke.JokeId = null;
+            setupJokeData (joke, jokeDto);
 
             User user = await _sqlServerDbContext.Users.SingleAsync<User> (u => u.UserEmail == jokeDto.UserEmail);
 
@@ -78,14 +89,7 @@ namespace jcwebapi.Services {
 
             joke.User = user;
 
-            List<Tag> existingTags = await _sqlServerDbContext.Tags.Where (t => jokeDto.Tags.Contains (t.Name)).ToListAsync ();
-
-            joke.Tags = existingTags;
-            foreach (string tag in jokeDto.Tags) {
-                if (!existingTags.Any (t => t.Name.Equals (tag, StringComparison.InvariantCultureIgnoreCase))) {
-                    joke.Tags.Add (new Tag { Name = tag.ToLowerInvariant () });
-                }
-            }
+            setupJokeTags (joke, jokeDto.Tags);
 
             joke.EmotionCounters = new List<EmotionCounter> ();
             foreach (string emotion in EmotionCounter.Emotions) {
@@ -103,18 +107,68 @@ namespace jcwebapi.Services {
             return (JokeDto) joke;
         }
 
-        public async Task Update (string id, Joke jokeIn) { }
-        //await _jokeCollection.ReplaceOneAsync (joke => joke.Id == id, jokeIn);
+        public async Task Update (string id, JokeDto jokeIn) {
+            int sqlId;
+            if (!Int32.TryParse (id, out sqlId)) {
+                throw new InvalidJokeIdException ($"{id} is not a valid joke id.");
+            }
 
-        public async Task<Joke> IncrementEmotionCounter (string id, string emotion) {
+            Joke joke = await _sqlServerDbContext.Jokes
+                .Where (j => j.JokeId == sqlId)
+                .Include (j => j.User)
+                .Include (j => j.Tags)
+                .Include (j => j.EmotionCounters)
+                .Include (j => j.ResponseStatistics)
+                .FirstAsync ();;
+
+            if (joke == null) {
+                throw new JokeNotFoundException ($"The joke with id:{id} not exists in the database.");
+            }
+
+            setupJokeData (joke, jokeIn);
+            setupJokeTags (joke, jokeIn.Tags);
+            await _sqlServerDbContext.SaveChangesAsync ();
+        }
+
+        public async Task<JokeDto> IncrementEmotionCounter (string id, string emotion) {
             return await Get (id);
 
         }
 
-        public async Task Remove (Joke jokeIn) { }
-        //await _jokeCollection.DeleteOneAsync (joke => joke.Id == jokeIn.Id);
+        public async Task Remove (string id) {
+            int sqlId;
+            if (!Int32.TryParse (id, out sqlId)) {
+                throw new InvalidJokeIdException ($"{id} is not a valid joke id.");
+            }
 
-        public async Task Remove (int? id) { }
-        //await _jokeCollection.DeleteOneAsync (joke => joke.Id == id);
+            Joke joke = await _sqlServerDbContext.Jokes.SingleAsync (j => j.JokeId == sqlId);
+
+            if (joke == null) {
+                throw new JokeNotFoundException ($"The joke with id:{id} not exists in the database.");
+            }
+
+            _sqlServerDbContext.Jokes.Remove (joke);
+            await _sqlServerDbContext.SaveChangesAsync ();
+        }
+
+        private void setupJokeData (Joke joke, JokeDto jokeDto) {
+            joke.JokeText = jokeDto.Text;
+            joke.Source = jokeDto.Source;
+            joke.Copyright = jokeDto.Copyright;
+            joke.CreationDate = jokeDto.CreationDate;
+            joke.ReleasedDate = jokeDto.ReleasedDate;
+        }
+
+        private async void setupJokeTags (Joke joke, IEnumerable<string> tags) {
+            List<Tag> existingTags = await _sqlServerDbContext.Tags.Where (t => tags.Contains (t.Name)).ToListAsync ();
+
+            joke.Tags = existingTags;
+            foreach (string tag in tags) {
+                if (!existingTags.Any (t => t.Name.Equals (tag, StringComparison.InvariantCultureIgnoreCase))) {
+                    joke.Tags.Add (new Tag { Name = tag.ToLowerInvariant () });
+                }
+            }
+        }
+
     }
 }

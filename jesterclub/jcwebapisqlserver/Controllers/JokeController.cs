@@ -21,7 +21,7 @@ namespace jcwebapi.Controllers {
         }
 
         [HttpGet ("{id}", Name = "GetJoke")]
-        public async Task<ActionResult<Joke>> Get (string id) {
+        public async Task<ActionResult<JokeDto>> Get (string id) {
             var joke = await _jokeService.Get (id);
 
             if (joke == null) {
@@ -53,21 +53,21 @@ namespace jcwebapi.Controllers {
             return CreatedAtRoute ("GetJoke", new { id = insertedJoke.ToString () }, insertedJoke);
         }
 
-        [HttpPut ("{id:length(24)}")]
-        public async Task<IActionResult> Update (string id, Joke jokeIn) {
-            var joke = await _jokeService.Get (id);
-
-            if (joke == null) {
+        [HttpPut ("{id}")]
+        public async Task<IActionResult> Update (string id, JokeDto jokeIn) {
+            try {
+                await _jokeService.Update (id, jokeIn);
+                return NoContent ();
+            } catch (InvalidJokeIdException) {
+                return BadRequest ();
+            } catch (JokeNotFoundException) {
                 return NotFound ();
             }
 
-            await _jokeService.Update (id, jokeIn);
-
-            return NoContent ();
         }
 
-        [HttpPut ("IncrementEmotionCounter/{id:length(24)}/{emotion}")]
-        public async Task<ActionResult<Joke>> IncrementEmotionCounter (string id, string emotion) {
+        [HttpPut ("IncrementEmotionCounter/{id}/{emotion}")]
+        public async Task<ActionResult<JokeDto>> IncrementEmotionCounter (string id, string emotion) {
             if (!Array.Exists (EmotionCounter.Emotions, e => e == emotion)) {
                 return BadRequest ();
             }
@@ -83,17 +83,16 @@ namespace jcwebapi.Controllers {
             return updatedJoke;
         }
 
-        [HttpDelete ("{id:length(24)}")]
+        [HttpDelete ("{id}")]
         public async Task<IActionResult> Delete (string id) {
-            var joke = await _jokeService.Get (id);
-
-            if (joke == null) {
+            try {
+                await _jokeService.Remove (id);
+                return NoContent ();
+            } catch (InvalidJokeIdException) {
+                return BadRequest ();
+            } catch (JokeNotFoundException) {
                 return NotFound ();
             }
-
-            await _jokeService.Remove (joke.JokeId);
-
-            return NoContent ();
         }
     }
 }

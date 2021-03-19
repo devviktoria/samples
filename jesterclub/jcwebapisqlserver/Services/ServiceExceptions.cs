@@ -9,6 +9,22 @@ namespace jcwebapi.Services {
         public JokeNotUpdatedException (string message, Exception inner) : base (message, inner) { }
     }
 
+    public class JokeNotFoundException : Exception {
+        public JokeNotFoundException () { }
+
+        public JokeNotFoundException (string message) : base (message) { }
+
+        public JokeNotFoundException (string message, Exception inner) : base (message, inner) { }
+    }
+
+    public class InvalidJokeIdException : Exception {
+        public InvalidJokeIdException () { }
+
+        public InvalidJokeIdException (string message) : base (message) { }
+
+        public InvalidJokeIdException (string message, Exception inner) : base (message, inner) { }
+    }
+
     public class UserNotFoundException : Exception {
         public UserNotFoundException () { }
 
