@@ -2,4 +2,6 @@
 This is going to be a small website where people can post jokes.
 
 ## Technical information
-It has a MongoDB database. The backend is a ASP.NET Core Web API, which uses the MongoDB's C# driver. The client side is in Angular. Please note that this project is in an early stage.
+It has two, ASP.NET Core Web API backends. One for an SQL Server database the other is for a MongoDB database.
+The client side is in Angular 11. 
+Please note that this project is in an early stage.
