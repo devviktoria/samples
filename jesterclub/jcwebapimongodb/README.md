@@ -1,4 +1,4 @@
-# Jester Club Web Site's Web API
+# Jester Club Web Site's MongoDB Web API
 This is the Web API for the Jester Club Web Site. It handles the MongoDB database behind the web site.
 
 ## Technical information
