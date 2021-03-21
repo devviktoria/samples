@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using jcwebapi.Repository;
 
 namespace jcwebapisqlserver.Migrations
 {
     [DbContext(typeof(SqlServerDbContext))]
-    partial class SqlServerDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210321092253_UpdateEmotionCounterSP")]
+    partial class UpdateEmotionCounterSP
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
