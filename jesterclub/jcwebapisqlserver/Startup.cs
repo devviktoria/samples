@@ -10,6 +10,8 @@ using Microsoft.OpenApi.Models;
 
 namespace jcwebapisqlserver {
     public class Startup {
+        readonly string JesterClubSpecificOrigins = "_JesterClubSpecificOrigins";
+
         public Startup (IConfiguration configuration) {
             Configuration = configuration;
         }
@@ -18,6 +20,14 @@ namespace jcwebapisqlserver {
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices (IServiceCollection services) {
+            services.AddCors (options => {
+                options.AddPolicy (name: JesterClubSpecificOrigins,
+                    builder => {
+                        builder.AllowAnyOrigin ()
+                            .AllowAnyMethod ()
+                            .AllowAnyHeader ();
+                    });
+            });
             string dbConnectionString = System.Environment.GetEnvironmentVariable ("JCSSDB");
             services.AddDbContext<SqlServerDbContext> (options =>
                 options.UseSqlServer (dbConnectionString));
@@ -38,9 +48,11 @@ namespace jcwebapisqlserver {
                 app.UseSwaggerUI (c => c.SwaggerEndpoint ("/swagger/v1/swagger.json", "jcwebapisqlserver v1"));
             }
 
-            app.UseHttpsRedirection ();
+            //app.UseHttpsRedirection ();
 
             app.UseRouting ();
+
+            app.UseCors (JesterClubSpecificOrigins);
 
             app.UseAuthorization ();
 

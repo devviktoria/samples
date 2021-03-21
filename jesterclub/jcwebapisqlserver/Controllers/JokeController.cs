@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace jcwebapi.Controllers {
 
-    //[EnableCors ("_JesterClubSpecificOrigins")]
+    [EnableCors ("_JesterClubSpecificOrigins")]
     [Route ("api/[controller]")]
     [ApiController]
     public class JokeController : ControllerBase {
@@ -71,16 +71,12 @@ namespace jcwebapi.Controllers {
             if (!Array.Exists (EmotionCounter.Emotions, e => e == emotion)) {
                 return BadRequest ();
             }
-
-            var joke = await _jokeService.Get (id);
-
-            if (joke == null) {
-                return NotFound ();
+            try {
+                JokeDto updatedJoke = await _jokeService.IncrementEmotionCounter (id, emotion);
+                return updatedJoke;
+            } catch (JokeNotFoundException) {
+                return BadRequest ();
             }
-
-            var updatedJoke = await _jokeService.IncrementEmotionCounter (id, emotion);
-
-            return updatedJoke;
         }
 
         [HttpDelete ("{id}")]

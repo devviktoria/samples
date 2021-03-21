@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using jcwebapi.Models;
 using jcwebapi.Models.Dtos;
 using jcwebapi.Repository;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 
 namespace jcwebapi.Services {
@@ -24,8 +25,12 @@ namespace jcwebapi.Services {
             if (!Int32.TryParse (id, out sqlId)) {
                 throw new InvalidJokeIdException ($"{id} is not a valid joke id.");
             }
-
-            return (JokeDto) (await _sqlServerDbContext.Jokes.SingleAsync (j => j.JokeId == sqlId));
+            Joke joke = await _sqlServerDbContext.Jokes.SingleAsync (j => j.JokeId == sqlId);
+            await _sqlServerDbContext.Entry (joke).Reference (j => j.User).LoadAsync ();
+            await _sqlServerDbContext.Entry (joke).Collection (j => j.Tags).LoadAsync ();
+            await _sqlServerDbContext.Entry (joke).Collection (j => j.EmotionCounters).LoadAsync ();
+            await _sqlServerDbContext.Entry (joke).Collection (j => j.ResponseStatistics).LoadAsync ();
+            return (JokeDto) (joke);
         }
 
         public async Task<IReadOnlyList<JokeDto>> GetLatestJokes (CancellationToken cancellationToken) {
@@ -131,8 +136,14 @@ namespace jcwebapi.Services {
         }
 
         public async Task<JokeDto> IncrementEmotionCounter (string id, string emotion) {
-            return await Get (id);
-
+            try {
+                SqlParameter jokeIdParam = new SqlParameter ("@jokeId", id);
+                SqlParameter emotionParam = new SqlParameter ("@emotion", emotion);
+                await _sqlServerDbContext.Database.ExecuteSqlRawAsync ("EXECUTE dbo.UpdateEmotionCounters @jokeId, @emotion", jokeIdParam, emotionParam);
+                return await Get (id);
+            } catch (SqlException sqlE) {
+                throw new JokeNotFoundException (sqlE.ToString ());
+            }
         }
 
         public async Task Remove (string id) {
