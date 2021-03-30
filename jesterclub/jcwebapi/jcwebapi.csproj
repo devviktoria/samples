@@ -11,6 +11,7 @@
   <ItemGroup>
     <ProjectReference Include="../jcinterfaces/jcinterfaces.csproj" />
     <ProjectReference Include="../jcmongodbservice/jcmongodbservice.csproj" />
+    <ProjectReference Include="../jcsqlserverservice/jcsqlserverservice.csproj" />
   </ItemGroup>
 
 </Project>

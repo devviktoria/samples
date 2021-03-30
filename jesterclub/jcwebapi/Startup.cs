@@ -27,7 +27,12 @@ namespace jcwebapi {
                     });
             });
 
-            jcmongodbservice.Repository.MongoDbDatabase.RegisterMongoDbServices (services);
+            if (Configuration["DatabaseToUse"].Equals ("SqlServer", System.StringComparison.OrdinalIgnoreCase)) {
+                jcsqlserverservice.Repository.SqlServerDatabase.RegisterSqlServerServices (services);
+            } else {
+                jcmongodbservice.Repository.MongoDbDatabase.RegisterMongoDbServices (services);
+            }
+
             services.AddControllers ().AddNewtonsoftJson (options => options.UseMemberCasing ());
             services.AddSwaggerGen (c => {
                 c.SwaggerDoc ("v1", new OpenApiInfo { Title = "jcwebapi", Version = "v1" });
